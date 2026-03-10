@@ -7,8 +7,8 @@ import { supabase } from "./lib/supabase";
 type Row = {
   id: string;
   name: string;
-  summary: string;
-  provider: string;
+  summary: string | null;
+  provider: string | null;
 };
 
 export default function HomePage() {
@@ -17,7 +17,15 @@ export default function HomePage() {
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function runSearch(query: string) {
+  async function runSearch(rawQuery: string) {
+    const query = rawQuery.trim();
+
+    if (!query) {
+      setRows([]);
+      setErr("");
+      return;
+    }
+
     setLoading(true);
     setErr("");
 
@@ -27,7 +35,7 @@ export default function HomePage() {
     });
 
     if (error) {
-      setErr(error.message);
+      setErr("Kunde inte hämta sökresultat just nu.");
       setRows([]);
       setLoading(false);
       return;
@@ -39,14 +47,21 @@ export default function HomePage() {
 
   useEffect(() => {
     runSearch(q);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <div style={{ maxWidth: 980, margin: "40px auto", fontFamily: "system-ui", padding: "0 16px" }}>
-      <h1 style={{ marginBottom: 6 }}>Stipendiekompassen</h1>
+    <main
+      style={{
+        maxWidth: 980,
+        margin: "40px auto",
+        padding: "0 16px",
+        fontFamily: "system-ui, sans-serif",
+      }}
+    >
+      <h1 style={{ marginBottom: 6 }}>Fundbridge</h1>
+
       <p style={{ marginTop: 0, opacity: 0.75 }}>
-        Sök bland stipendier och klicka för full information.
+        Hitta stipendier och finansiering som matchar din bakgrund och dina studier.
       </p>
 
       <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
@@ -54,28 +69,50 @@ export default function HomePage() {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Sök t.ex. ekonomi uppsala, juridik kvinnor, forskning…"
-          style={{ flex: 1, padding: 12, borderRadius: 10, border: "1px solid #ddd" }}
+          style={{
+            flex: 1,
+            padding: 12,
+            borderRadius: 10,
+            border: "1px solid #ddd",
+            fontSize: 16,
+          }}
           onKeyDown={(e) => {
-            if (e.key === "Enter") runSearch(q);
+            if (e.key === "Enter") {
+              runSearch(q);
+            }
           }}
         />
+
         <button
           onClick={() => runSearch(q)}
-          style={{ padding: "12px 14px", borderRadius: 10, border: "1px solid #ddd", cursor: "pointer" }}
+          disabled={loading}
+          style={{
+            padding: "12px 14px",
+            borderRadius: 10,
+            border: "1px solid #ddd",
+            cursor: loading ? "default" : "pointer",
+            background: loading ? "#f3f3f3" : "white",
+          }}
         >
           {loading ? "Söker…" : "Sök"}
         </button>
       </div>
 
-      {err && <p style={{ color: "crimson", marginTop: 12 }}>{err}</p>}
+      {err && (
+        <p style={{ color: "crimson", marginTop: 12 }}>
+          {err}
+        </p>
+      )}
 
       {!err && !loading && rows.length === 0 && (
-        <p style={{ marginTop: 18, opacity: 0.7 }}>Inga träffar.</p>
+        <p style={{ marginTop: 18, opacity: 0.7 }}>
+          Inga träffar. Testa andra sökord.
+        </p>
       )}
 
       <div style={{ marginTop: 18 }}>
         {rows.map((r) => (
-          <div
+          <article
             key={r.id}
             style={{
               border: "1px solid #eee",
@@ -86,7 +123,10 @@ export default function HomePage() {
             }}
           >
             <div style={{ fontWeight: 700, fontSize: 16 }}>
-              <Link href={`/stipendium/${r.id}`} style={{ textDecoration: "none", color: "inherit" }}>
+              <Link
+                href={`/stipendium/${r.id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
                 {r.name}
               </Link>
             </div>
@@ -108,9 +148,9 @@ export default function HomePage() {
                 Läs mer →
               </Link>
             </div>
-          </div>
+          </article>
         ))}
       </div>
-    </div>
+    </main>
   );
 }

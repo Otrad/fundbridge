@@ -30,9 +30,8 @@ function formatTotal(total: number) {
 function HomePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialQuery = searchParams.get("q") ?? "";
 
-  const [q, setQ] = useState(initialQuery);
+  const [q, setQ] = useState("");
   const [rows, setRows] = useState<Row[]>([]);
   const [total, setTotal] = useState(0);
   const [err, setErr] = useState("");
@@ -43,8 +42,11 @@ function HomePageContent() {
   const [unlocked, setUnlocked] = useState(false);
   const [isStartingCheckout, setIsStartingCheckout] = useState(false);
   const [paymentCancelled, setPaymentCancelled] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
-  const hasLoadedInitialSearch = useRef(false);
+  const hasInitialized = useRef(false);
+  const lastExecutedQueryRef = useRef("");
+  const activeSearchIdRef = useRef(0);
 
   async function refreshAccess() {
     try {
@@ -60,17 +62,17 @@ function HomePageContent() {
     }
   }
 
-  async function runSearch(rawQuery: string) {
+  async function performSearch(rawQuery: string) {
     const query = rawQuery.trim();
+    const searchId = ++activeSearchIdRef.current;
 
     if (!query) {
       setRows([]);
       setTotal(0);
       setErr("");
-      setSuggestions([]);
-      setShowSuggestions(false);
-      setPaymentCancelled(false);
-      router.replace("/");
+      setLoading(false);
+      setHasSearched(false);
+      lastExecutedQueryRef.current = "";
       return;
     }
 
@@ -78,11 +80,12 @@ function HomePageContent() {
     setErr("");
     setShowSuggestions(false);
     setPaymentCancelled(false);
-
-    router.replace(`/?q=${encodeURIComponent(query)}`);
+    setHasSearched(true);
 
     try {
-      const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+      const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`, {
+        cache: "no-store",
+      });
 
       if (!res.ok) {
         throw new Error("Search request failed");
@@ -90,15 +93,30 @@ function HomePageContent() {
 
       const data = await res.json();
 
-      setRows(Array.isArray(data?.results) ? data.results : []);
-      setTotal(typeof data?.total === "number" ? data.total : 0);
+      if (searchId !== activeSearchIdRef.current) {
+        return;
+      }
+
+      const nextResults = Array.isArray(data?.results) ? data.results : [];
+      const nextTotal = typeof data?.total === "number" ? data.total : 0;
+
+      setRows(nextResults);
+      setTotal(nextTotal);
+      setErr("");
+      lastExecutedQueryRef.current = query;
     } catch (error) {
+      if (searchId !== activeSearchIdRef.current) {
+        return;
+      }
+
       console.error("Frontend search error:", error);
       setErr("Kunde inte hämta sökresultat just nu.");
       setRows([]);
       setTotal(0);
     } finally {
-      setLoading(false);
+      if (searchId === activeSearchIdRef.current) {
+        setLoading(false);
+      }
     }
   }
 
@@ -112,7 +130,9 @@ function HomePageContent() {
     }
 
     try {
-      const res = await fetch(`/api/suggest?q=${encodeURIComponent(query)}`);
+      const res = await fetch(`/api/suggest?q=${encodeURIComponent(query)}`, {
+        cache: "no-store",
+      });
 
       if (!res.ok) {
         throw new Error("Suggestion request failed");
@@ -159,6 +179,7 @@ function HomePageContent() {
   }
 
   function resetHome() {
+    activeSearchIdRef.current += 1;
     setQ("");
     setRows([]);
     setTotal(0);
@@ -168,7 +189,26 @@ function HomePageContent() {
     setMenuOpen(false);
     setIsStartingCheckout(false);
     setPaymentCancelled(false);
+    setHasSearched(false);
+    lastExecutedQueryRef.current = "";
     router.replace("/");
+  }
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const query = q.trim();
+
+    if (!query) {
+      resetHome();
+      return;
+    }
+
+    if (query !== searchParams.get("q")) {
+      router.replace(`/?q=${encodeURIComponent(query)}`);
+    }
+
+    performSearch(query);
   }
 
   useEffect(() => {
@@ -176,32 +216,40 @@ function HomePageContent() {
   }, []);
 
   useEffect(() => {
-    const urlQuery = searchParams.get("q") ?? "";
+    const urlQuery = (searchParams.get("q") ?? "").trim();
     const paymentStatus = searchParams.get("payment");
 
-    setQ(urlQuery);
     setPaymentCancelled(paymentStatus === "cancelled");
     refreshAccess();
 
-    if (!hasLoadedInitialSearch.current) {
-      hasLoadedInitialSearch.current = true;
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      setQ(urlQuery);
 
-      if (urlQuery.trim()) {
-        runSearch(urlQuery);
-      } else {
-        setRows([]);
-        setTotal(0);
+      if (urlQuery) {
+        setHasSearched(true);
+        performSearch(urlQuery);
       }
 
       return;
     }
 
-    if (urlQuery.trim()) {
-      runSearch(urlQuery);
-    } else {
+    setQ(urlQuery);
+
+    if (!urlQuery) {
+      activeSearchIdRef.current += 1;
       setRows([]);
       setTotal(0);
       setErr("");
+      setLoading(false);
+      setHasSearched(false);
+      lastExecutedQueryRef.current = "";
+      return;
+    }
+
+    if (urlQuery !== lastExecutedQueryRef.current) {
+      setHasSearched(true);
+      performSearch(urlQuery);
     }
   }, [searchParams]);
 
@@ -436,7 +484,7 @@ function HomePageContent() {
               color: "#111827",
             }}
           >
-            Hitta stipendier som passar just dig
+            Hitta stipendier i Sverige
           </h1>
 
           <p
@@ -448,16 +496,14 @@ function HomePageContent() {
               color: "#374151",
             }}
           >
-            Det finns tusentals stipendier i Sverige – men de kan vara svåra att
-            hitta. Fundbridge hjälper dig hitta det som matchar din bakgrund,
-            dina studier eller din situation.
+            Sök bland stipendier i Sverige för studenter, privatpersoner och
+            organisationer. Fundbridge samlar aktuella stipendier och
+            finansieringsmöjligheter på ett ställe så att du snabbare kan hitta
+            rätt stipendium för din situation.
           </p>
 
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              runSearch(q);
-            }}
+            onSubmit={handleSubmit}
             style={{
               marginTop: 24,
             }}
@@ -519,7 +565,7 @@ function HomePageContent() {
                   boxShadow: "0 6px 18px rgba(47,111,115,0.16)",
                 }}
               >
-                {loading ? "Söker…" : "Sök"}
+                {loading ? "Söker…" : "Sök stipendier"}
               </button>
 
               {showSuggestions && suggestions.length > 0 && (
@@ -548,7 +594,8 @@ function HomePageContent() {
                       onClick={() => {
                         setQ(suggestion);
                         setShowSuggestions(false);
-                        runSearch(suggestion);
+                        router.replace(`/?q=${encodeURIComponent(suggestion)}`);
+                        performSearch(suggestion);
                       }}
                       style={{
                         display: "block",
@@ -590,8 +637,8 @@ function HomePageContent() {
               color: "#7b7f86",
             }}
           >
-            Databasen innehåller tusentals stipendier, bidrag och stöd från
-            stiftelser, organisationer och andra utlysare.
+            Se hur många stipendier som matchar din sökning och få full tillgång
+            till alla resultat för 39 kr i 30 dagar.
           </p>
         </section>
 
@@ -657,7 +704,7 @@ function HomePageContent() {
           </div>
         )}
 
-        {!err && !loading && rows.length === 0 && q.trim() && (
+        {!err && !loading && hasSearched && rows.length === 0 && total === 0 && (
           <p
             style={{
               marginTop: 28,
@@ -732,7 +779,7 @@ function HomePageContent() {
               }}
             >
               Få full tillgång till alla resultat, detaljer och
-              ansökningsinformation.
+              ansökningsinformation direkt.
             </div>
 
             <div
@@ -773,7 +820,7 @@ function HomePageContent() {
                 opacity: isStartingCheckout ? 0.8 : 1,
               }}
             >
-              {isStartingCheckout ? "Startar betalning..." : "Få tillgång direkt"}
+              {isStartingCheckout ? "Startar betalning..." : "Få tillgång för 39 kr"}
             </button>
 
             <div

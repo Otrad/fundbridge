@@ -4,6 +4,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Fundbridge",
   description: "Hitta stipendier och finansiering",
+  verification: {
+    google: "WpYlViWtZogXAzFlNn6WJtqbthlucIvIedr7pjVnmE0",
+  },
 };
 
 export default function RootLayout({

@@ -1,4 +1,3 @@
-<h1>TEST VERSION</h1>
 "use client";
 
 import Link from "next/link";

@@ -21,11 +21,34 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: "https://www.fundbridge.se/stipendier-studenter",
     },
+
+    // SEO pages
     {
       url: "https://www.fundbridge.se/stipendium-2026",
     },
     {
-  url: "https://www.fundbridge.se/stipendium-lista",
-}
+      url: "https://www.fundbridge.se/stipendium-lista",
+    },
+    {
+      url: "https://www.fundbridge.se/stipendier-utlandsstudier",
+    },
+    {
+      url: "https://www.fundbridge.se/stipendier-juridikstudent",
+    },
+    {
+      url: "https://www.fundbridge.se/stipendier-medicin",
+    },
+    {
+      url: "https://www.fundbridge.se/stipendier-behovande",
+    },
+    {
+      url: "https://www.fundbridge.se/stipendier-stockholm",
+    },
+    {
+      url: "https://www.fundbridge.se/stipendier-uppsala",
+    },
+    {
+      url: "https://www.fundbridge.se/stipendier-lund",
+    },
   ];
 }

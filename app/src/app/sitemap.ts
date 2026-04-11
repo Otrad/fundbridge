@@ -24,5 +24,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: "https://www.fundbridge.se/stipendium-2026",
     },
+    {
+  url: "https://www.fundbridge.se/stipendium-lista",
+}
   ];
 }

@@ -8,10 +8,6 @@ export const metadata: Metadata = {
   verification: {
     google: "WpYlViWtZogXAzFlNn6WJtqbthlucIvIedr7pjVnmE0",
   },
-  icons: {
-    icon: "/icon.png",
-    apple: "/apple-touch-icon.png",
-  },
   openGraph: {
     title: "Hitta stipendier i Sverige | Fundbridge",
     description:

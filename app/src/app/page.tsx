@@ -12,6 +12,17 @@ type Row = {
   tags?: string | null;
 };
 
+const popularSearches = [
+  { label: "Stipendier för juridikstudenter", href: "/sok/juridikstudent" },
+  { label: "Stipendier inom medicin", href: "/sok/medicin" },
+  { label: "Stipendier i Stockholm", href: "/sok/stockholm" },
+  { label: "Stipendier i Uppsala", href: "/sok/uppsala" },
+  { label: "Stipendier i Lund", href: "/sok/lund" },
+  { label: "Stipendier för utlandsstudier", href: "/sok/utlandsstudier" },
+  { label: "Stipendier för behövande", href: "/sok/behovande" },
+  { label: "Stipendier för studenter", href: "/sok/studenter" },
+];
+
 function normalizeTags(tags: string | null | undefined) {
   if (!tags) return [];
 
@@ -641,6 +652,78 @@ function HomePageContent() {
             till alla resultat för 39 kr i 30 dagar.
           </p>
         </section>
+
+        {!hasSearch && (
+          <section
+            style={{
+              maxWidth: 900,
+              margin: "42px auto 0",
+              background: "#ffffff",
+              border: "1px solid #e7e7e2",
+              borderRadius: 20,
+              padding: "28px 24px",
+              boxShadow: "0 10px 30px rgba(17,24,39,0.04)",
+            }}
+          >
+            <h2
+              style={{
+                margin: 0,
+                fontSize: 28,
+                lineHeight: 1.15,
+                letterSpacing: "-0.03em",
+                fontWeight: 750,
+                color: "#111827",
+                textAlign: "center",
+              }}
+            >
+              Populära sökningar
+            </h2>
+
+            <p
+              style={{
+                margin: "12px auto 0",
+                maxWidth: 680,
+                textAlign: "center",
+                fontSize: 16,
+                lineHeight: 1.7,
+                color: "#4b5563",
+              }}
+            >
+              Utforska vanliga kategorier och orter för att hitta stipendier för
+              studenter, utlandsstudier och olika utbildningsområden i Sverige.
+            </p>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                gap: 14,
+                marginTop: 24,
+              }}
+            >
+              {popularSearches.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  style={{
+                    textDecoration: "none",
+                    padding: "16px 18px",
+                    borderRadius: 16,
+                    border: "1px solid #e5e7eb",
+                    background: "#f9fafb",
+                    color: "#111827",
+                    fontSize: 15,
+                    fontWeight: 600,
+                    lineHeight: 1.5,
+                    boxShadow: "0 2px 10px rgba(17,24,39,0.03)",
+                  }}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         {err && (
           <p

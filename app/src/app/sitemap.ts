@@ -11,21 +11,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/kontakt`, lastModified: now },
     { url: `${base}/soka-stipendium`, lastModified: now },
 
-    // Kategorisidor
-    { url: `${base}/stipendier-sverige`, lastModified: now },
-    { url: `${base}/stipendier-studenter`, lastModified: now },
-
-    // SEO-artiklar
+    // SEO-artiklar (behåll)
     { url: `${base}/stipendium-2026`, lastModified: now },
     { url: `${base}/stipendium-lista`, lastModified: now },
 
-    // 🔥 Nya SEO-slugs
+    // 🔥 Nya SEO-slugs (FOKUS)
     { url: `${base}/sok/juridikstudent`, lastModified: now },
     { url: `${base}/sok/medicin`, lastModified: now },
     { url: `${base}/sok/utlandsstudier`, lastModified: now },
     { url: `${base}/sok/behovande`, lastModified: now },
+    { url: `${base}/sok/studenter`, lastModified: now },
 
-    // 🔥 Städer (bra SEO)
+    // 🔥 Städer
     { url: `${base}/sok/stockholm`, lastModified: now },
     { url: `${base}/sok/uppsala`, lastModified: now },
     { url: `${base}/sok/lund`, lastModified: now },

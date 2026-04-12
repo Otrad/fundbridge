@@ -9,13 +9,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: base, lastModified: now },
     { url: `${base}/om-fundbridge`, lastModified: now },
     { url: `${base}/kontakt`, lastModified: now },
-    { url: `${base}/soka-stipendium`, lastModified: now },
 
-    // SEO-artiklar (behåll)
+    // 🔥 Viktig söksida
+    { url: `${base}/sok`, lastModified: now },
+
+    // SEO-artiklar
     { url: `${base}/stipendium-2026`, lastModified: now },
     { url: `${base}/stipendium-lista`, lastModified: now },
 
-    // 🔥 Nya SEO-slugs (FOKUS)
+    // 🔥 SEO-slugs (huvud)
     { url: `${base}/sok/juridikstudent`, lastModified: now },
     { url: `${base}/sok/medicin`, lastModified: now },
     { url: `${base}/sok/utlandsstudier`, lastModified: now },

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 type Row = {
@@ -43,10 +43,16 @@ function HomePageContent() {
   const [isStartingCheckout, setIsStartingCheckout] = useState(false);
   const [paymentCancelled, setPaymentCancelled] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const hasInitialized = useRef(false);
   const lastExecutedQueryRef = useRef("");
   const activeSearchIdRef = useRef(0);
+
+  const placeholder = useMemo(() => {
+    if (isMobile) return "Sök stipendier...";
+    return "Sök t.ex. juridikstudent, utlandsstudier, behövande eller medicin";
+  }, [isMobile]);
 
   async function refreshAccess() {
     try {
@@ -216,6 +222,17 @@ function HomePageContent() {
   }, []);
 
   useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
     const urlQuery = (searchParams.get("q") ?? "").trim();
     const paymentStatus = searchParams.get("payment");
 
@@ -379,7 +396,7 @@ function HomePageContent() {
         style={{
           maxWidth: 1040,
           margin: "0 auto",
-          padding: "10px 20px 72px",
+          padding: isMobile ? "10px 16px 56px" : "10px 20px 72px",
         }}
       >
         <header
@@ -388,7 +405,7 @@ function HomePageContent() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            marginBottom: hasSearch ? 14 : 24,
+            marginBottom: hasSearch ? 14 : isMobile ? 18 : 24,
             minHeight: 34,
           }}
         >
@@ -477,8 +494,8 @@ function HomePageContent() {
           <h1
             style={{
               margin: 0,
-              fontSize: hasSearch ? 42 : 56,
-              lineHeight: 1.02,
+              fontSize: isMobile ? (hasSearch ? 34 : 42) : hasSearch ? 42 : 56,
+              lineHeight: isMobile ? 1.06 : 1.02,
               letterSpacing: "-0.045em",
               fontWeight: 750,
               color: "#111827",
@@ -489,10 +506,10 @@ function HomePageContent() {
 
           <p
             style={{
-              margin: "18px auto 0",
+              margin: isMobile ? "14px auto 0" : "18px auto 0",
               maxWidth: 720,
-              fontSize: 19,
-              lineHeight: 1.7,
+              fontSize: isMobile ? 16 : 19,
+              lineHeight: isMobile ? 1.65 : 1.7,
               color: "#374151",
             }}
           >
@@ -505,7 +522,7 @@ function HomePageContent() {
           <form
             onSubmit={handleSubmit}
             style={{
-              marginTop: 24,
+              marginTop: isMobile ? 20 : 24,
             }}
           >
             <div
@@ -528,11 +545,11 @@ function HomePageContent() {
                     setShowSuggestions(true);
                   }
                 }}
-                placeholder="Sök t.ex. juridikstudent, utlandsstudier, behövande eller medicin"
+                placeholder={placeholder}
                 style={{
                   width: "100%",
-                  height: 60,
-                  padding: "0 120px 0 18px",
+                  height: isMobile ? 56 : 60,
+                  padding: isMobile ? "0 102px 0 14px" : "0 120px 0 18px",
                   borderRadius: 16,
                   border: "1px solid #d8ddd8",
                   fontSize: 16,
@@ -549,10 +566,10 @@ function HomePageContent() {
                 disabled={loading}
                 style={{
                   position: "absolute",
-                  top: 6,
-                  right: 6,
-                  height: 48,
-                  padding: "0 20px",
+                  top: isMobile ? 5 : 6,
+                  right: isMobile ? 5 : 6,
+                  height: isMobile ? 46 : 48,
+                  padding: isMobile ? "0 14px" : "0 20px",
                   borderRadius: 12,
                   border: "none",
                   cursor: loading ? "default" : "pointer",
@@ -560,7 +577,7 @@ function HomePageContent() {
                   color: "#ffffff",
                   whiteSpace: "nowrap",
                   zIndex: 30,
-                  fontSize: 15,
+                  fontSize: isMobile ? 14 : 15,
                   fontWeight: 600,
                   boxShadow: "0 6px 18px rgba(47,111,115,0.16)",
                 }}
@@ -601,7 +618,7 @@ function HomePageContent() {
                         display: "block",
                         width: "100%",
                         textAlign: "left",
-                        padding: "13px 14px",
+                        padding: isMobile ? "12px 13px" : "13px 14px",
                         border: "none",
                         background: "#ffffff",
                         cursor: "pointer",
@@ -635,6 +652,9 @@ function HomePageContent() {
               fontSize: 14,
               lineHeight: 1.6,
               color: "#7b7f86",
+              maxWidth: 620,
+              marginLeft: "auto",
+              marginRight: "auto",
             }}
           >
             Se hur många stipendier som matchar din sökning och få full tillgång
@@ -736,7 +756,7 @@ function HomePageContent() {
           <div
             style={{
               marginTop: 20,
-              padding: "30px 24px",
+              padding: isMobile ? "24px 18px" : "30px 24px",
               borderRadius: 18,
               background: "#ffffff",
               border: "1px solid #e7e7e2",
@@ -751,7 +771,7 @@ function HomePageContent() {
 
             <div
               style={{
-                fontSize: 22,
+                fontSize: isMobile ? 20 : 22,
                 fontWeight: 700,
                 marginBottom: 10,
               }}
@@ -807,8 +827,10 @@ function HomePageContent() {
               disabled={isStartingCheckout}
               style={{
                 marginTop: 20,
+                width: isMobile ? "100%" : "auto",
+                maxWidth: isMobile ? 320 : undefined,
                 height: 46,
-                padding: "0 24px",
+                padding: isMobile ? "0 18px" : "0 24px",
                 borderRadius: 12,
                 border: "none",
                 background: "#2f6f73",
@@ -853,7 +875,7 @@ function HomePageContent() {
                   style={{
                     border: "1px solid #e7e7e2",
                     borderRadius: 20,
-                    padding: 22,
+                    padding: isMobile ? 18 : 22,
                     marginBottom: 16,
                     background: "#ffffff",
                     boxShadow: "0 6px 24px rgba(17,24,39,0.03)",
@@ -862,7 +884,7 @@ function HomePageContent() {
                   <div
                     style={{
                       fontWeight: 700,
-                      fontSize: 22,
+                      fontSize: isMobile ? 20 : 22,
                       lineHeight: 1.25,
                       letterSpacing: "-0.02em",
                     }}
@@ -936,7 +958,9 @@ function HomePageContent() {
                       marginTop: 16,
                       display: "flex",
                       justifyContent: "space-between",
-                      alignItems: "center",
+                      alignItems: isMobile ? "flex-start" : "center",
+                      flexDirection: isMobile ? "column" : "row",
+                      gap: isMobile ? 8 : 12,
                     }}
                   >
                     <Link

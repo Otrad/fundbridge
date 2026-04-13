@@ -24,12 +24,38 @@ type PageCopy = {
   section2Title: string;
   section2Body1: string;
   section2Body2: string;
+  section3Title: string;
+  section3Body1: string;
+  section3Body2: string;
   faqTitle: string;
   faqBody: string;
+  ctaTitle: string;
+  ctaBody: string;
 };
 
+export const revalidate = 3600;
+
+const PRIORITY_SLUGS = [
+  "studenter",
+  "behovande",
+  "sverige",
+  "juridikstudent",
+  "medicin",
+  "utlandsstudier",
+  "stockholm",
+  "uppsala",
+  "lund",
+  "goteborg",
+  "malmo",
+  "ekonomi",
+  "ingenjor",
+  "sjukskoterska",
+  "resa",
+  "forskning",
+];
+
 const slugDisplayMap: Record<string, string> = {
-  juridikstudent: "juridikstudent",
+  juridikstudent: "juridikstudenter",
   medicin: "medicin",
   utlandsstudier: "utlandsstudier",
   behovande: "behövande",
@@ -47,12 +73,12 @@ const slugDisplayMap: Record<string, string> = {
   forskning: "forskning",
 };
 
-function formatSlug(slug: string) {
-  return slugDisplayMap[slug] ?? slug.replace(/-/g, " ");
+export function generateStaticParams() {
+  return PRIORITY_SLUGS.map((slug) => ({ slug }));
 }
 
-function formatTitle(term: string) {
-  return term.charAt(0).toUpperCase() + term.slice(1);
+function formatSlug(slug: string) {
+  return slugDisplayMap[slug] ?? slug.replace(/-/g, " ");
 }
 
 function getRelatedLinks(slug: string) {
@@ -75,7 +101,65 @@ function getRelatedLinks(slug: string) {
     { label: "Stipendier för forskning", href: "/sok/forskning" },
   ];
 
-  return allLinks.filter((link) => link.href !== `/sok/${slug}`).slice(0, 6);
+  const clusters: Record<string, string[]> = {
+    studenter: [
+      "/sok/behovande",
+      "/sok/sverige",
+      "/sok/utlandsstudier",
+      "/sok/juridikstudent",
+      "/sok/medicin",
+      "/sok/ekonomi",
+    ],
+    behovande: [
+      "/sok/studenter",
+      "/sok/sverige",
+      "/sok/stockholm",
+      "/sok/goteborg",
+      "/sok/malmo",
+      "/sok/uppsala",
+    ],
+    sverige: [
+      "/sok/studenter",
+      "/sok/behovande",
+      "/sok/stockholm",
+      "/sok/goteborg",
+      "/sok/malmo",
+      "/sok/utlandsstudier",
+    ],
+    juridikstudent: [
+      "/sok/studenter",
+      "/sok/utlandsstudier",
+      "/sok/stockholm",
+      "/sok/uppsala",
+      "/sok/lund",
+      "/sok/behovande",
+    ],
+    medicin: [
+      "/sok/studenter",
+      "/sok/sjukskoterska",
+      "/sok/forskning",
+      "/sok/utlandsstudier",
+      "/sok/stockholm",
+      "/sok/lund",
+    ],
+    utlandsstudier: [
+      "/sok/studenter",
+      "/sok/resa",
+      "/sok/juridikstudent",
+      "/sok/medicin",
+      "/sok/ekonomi",
+      "/sok/ingenjor",
+    ],
+  };
+
+  const preferred = clusters[slug];
+  if (!preferred) {
+    return allLinks.filter((link) => link.href !== `/sok/${slug}`).slice(0, 6);
+  }
+
+  return preferred
+    .map((href) => allLinks.find((link) => link.href === href))
+    .filter((link): link is { label: string; href: string } => Boolean(link));
 }
 
 function getPageCopy(slug: string): PageCopy {
@@ -86,15 +170,20 @@ function getPageCopy(slug: string): PageCopy {
     title: `Stipendier för ${displayTerm}`,
     description: `Hitta stipendier för ${displayTerm} i Sverige. Jämför stipendier, se exempel och hitta relevanta finansieringsmöjligheter hos Fundbridge.`,
     intro: `Här hittar du stipendier för ${displayTerm} i Sverige. Fundbridge hjälper dig att snabbt få en överblick över relevanta stipendier, finansieringsmöjligheter och stöd som kan passa din situation.`,
-    intro2: `Oavsett om du söker stipendium för studier, utbildning, särskilda behov, forskning eller personliga omständigheter kan du använda Fundbridge för att hitta rätt bland många olika alternativ på ett och samma ställe.`,
+    intro2: `Många stipendier har särskilda kriterier kopplade till utbildning, bakgrund, ekonomi, ort eller syftet med ansökan. Därför är det viktigt att jämföra flera alternativ och läsa villkoren noggrant.`,
     section1Title: `Vilka stipendier finns för ${displayTerm}?`,
     section1Body1: `Det finns många olika typer av stipendier för ${displayTerm}. Vissa delas ut av stiftelser, andra av organisationer, fonder, utbildningsaktörer eller lokala initiativ. Kraven varierar ofta beroende på bakgrund, studieinriktning, ort, ekonomi eller syftet med ansökan.`,
     section1Body2: `Genom att söka brett och använda rätt sökord kan du hitta stipendier som är relevanta för just ${displayTerm}. Det kan handla om både större och mindre belopp, men även mindre stipendier kan vara värdefulla som stöd under studietiden eller i samband med särskilda projekt.`,
     section2Title: `Så hittar du rätt stipendium för ${displayTerm}`,
     section2Body1: `Ett bra första steg är att börja med en bred sökning och sedan jämföra flera olika stipendier. Titta på vilka krav som ställs, vilka målgrupper stipendiet riktar sig till och vilken typ av dokumentation som behövs i ansökan.`,
     section2Body2: `För den som söker stipendier för ${displayTerm} är det ofta klokt att vara uppmärksam på formuleringar kring utbildning, ekonomi, studieort, särskilda meriter eller social situation. Ju bättre du matchar din ansökan mot stipendiets syfte, desto större chans har du att hitta rätt möjlighet.`,
+    section3Title: `Så ökar du chansen att få stipendium för ${displayTerm}`,
+    section3Body1: `För att öka chansen att få stipendium är det bra att söka flera stipendier samtidigt, anpassa ansökan efter varje utlysning och vara tydlig med varför du uppfyller kriterierna. Många missar möjligheter genom att skriva alltför generellt.`,
+    section3Body2: `Det hjälper också att vara ute i god tid. Flera stipendier har fasta ansökningsperioder, och de sökande som skickar in väl förberedda ansökningar har ofta bättre förutsättningar än de som söker i sista stund.`,
     faqTitle: `Vanliga frågor om stipendier för ${displayTerm}`,
     faqBody: `Många som söker stipendier för ${displayTerm} undrar vilka krav som gäller, hur man hittar rätt stipendier och hur man ökar sina chanser i ansökan. En bra utgångspunkt är att läsa kriterier noggrant, söka flera stipendier samtidigt och anpassa ansökan efter varje enskild utlysning.`,
+    ctaTitle: `Hitta stipendier för ${displayTerm} hos Fundbridge`,
+    ctaBody: `Fundbridge är byggt för att göra det enklare att hitta stipendier i Sverige. På denna sida kan du se hur många stipendier som matchar ${displayTerm}, få inspiration och sedan gå vidare till sökningen för att hitta rätt alternativ för just dig.`,
   };
 
   const custom: Record<string, Partial<PageCopy>> = {
@@ -105,7 +194,7 @@ function getPageCopy(slug: string): PageCopy {
       intro:
         "Här hittar du stipendier för studenter i Sverige. Fundbridge hjälper dig att snabbt få en överblick över stipendier och finansieringsmöjligheter som kan passa olika typer av studenter.",
       intro2:
-        "Många stipendier för studenter riktar sig till särskilda utbildningar, studieorter, ekonomiska situationer eller personliga omständigheter. Därför är det viktigt att söka brett och jämföra flera alternativ.",
+        "Många stipendier för studenter riktar sig till särskilda utbildningar, studieorter, ekonomiska situationer eller personliga omständigheter. Därför är det viktigt att söka brett och jämföra flera alternativ om du vill hitta rätt stipendium.",
       section1Title: "Vilka stipendier kan studenter söka?",
       section1Body1:
         "Studenter kan söka stipendier från stiftelser, fonder, föreningar, utbildningsaktörer och privata donationer. Vissa stipendier gäller alla studenter, medan andra är avgränsade till exempelvis studieinriktning, ort, ekonomiskt behov eller akademiska meriter.",
@@ -116,8 +205,16 @@ function getPageCopy(slug: string): PageCopy {
         "Börja med att titta på stipendiernas målgrupp, ansökningstid och vilka dokument som krävs. För många studenter är det smart att söka flera stipendier parallellt eftersom kraven skiljer sig åt mellan olika stiftelser och fonder.",
       section2Body2:
         "En genomarbetad ansökan kan göra stor skillnad. För studenter är det ofta viktigt att beskriva utbildning, mål, ekonomisk situation och varför stödet behövs just nu.",
+      section3Title: "Så ökar studenter chansen att få stipendium",
+      section3Body1:
+        "Studenter som lyckas bra med stipendieansökningar brukar vara konkreta. Beskriv vad du studerar, vad du vill uppnå, hur stipendiet ska användas och varför du passar stipendiets målgrupp.",
+      section3Body2:
+        "Det är också smart att inte låsa sig vid bara ett stipendium. Den som söker flera relevanta stipendier för studenter ökar ofta chansen att få finansiering betydligt.",
       faqBody:
         "Vanliga frågor handlar om vem som räknas som student, om man kan söka flera stipendier samtidigt och vilka underlag som behövs. Ofta är svaret ja på flera av dessa frågor, men varje stipendium har sina egna villkor.",
+      ctaTitle: "Hitta stipendier för studenter hos Fundbridge",
+      ctaBody:
+        "På Fundbridge kan du snabbt se hur många stipendier som matchar studenter och gå vidare till rätt resultat. Det gör det enklare att hitta stipendier för studier i Sverige utan att leta på många olika ställen.",
     },
     behovande: {
       displayTerm: "behövande",
@@ -138,8 +235,16 @@ function getPageCopy(slug: string): PageCopy {
         "Börja med att identifiera vilka kriterier som gäller för varje fond eller stiftelse. Vissa kräver ekonomiska underlag, intyg eller personligt brev där du beskriver din situation och varför du söker stöd.",
       section2Body2:
         "När du söker stipendier för behövande är det viktigt att vara tydlig, konkret och ärlig i ansökan. En välskriven ansökan som tydligt visar behovet kan öka möjligheten att få stöd.",
+      section3Title: "Så ökar du chansen att få stöd som behövande",
+      section3Body1:
+        "När du söker stipendier som behövande är dokumentation ofta avgörande. Det kan handla om ekonomiska underlag, intyg från skola, vård eller annan relevant part beroende på stipendiets krav.",
+      section3Body2:
+        "Det är också viktigt att förklara hur stödet skulle göra konkret skillnad. Stiftelser vill ofta förstå både behovet och hur pengarna ska användas i praktiken.",
       faqBody:
         "Vanliga frågor handlar om vilka typer av ekonomiska svårigheter som kan berättiga stöd, vilka underlag som behövs och hur många stipendier man kan söka. Det varierar mellan olika stiftelser, så läs alltid villkoren noga.",
+      ctaTitle: "Hitta stipendier för behövande hos Fundbridge",
+      ctaBody:
+        "Fundbridge gör det enklare att hitta stipendier för behövande genom att samla relevanta möjligheter på ett ställe. Det hjälper dig att snabbare se vilka stipendier som faktiskt passar din situation.",
     },
     sverige: {
       displayTerm: "Sverige",
@@ -160,8 +265,16 @@ function getPageCopy(slug: string): PageCopy {
         "Ett bra sätt att börja är att först identifiera om du söker stipendier för studier, personliga behov, yrkesområde eller geografisk plats. Därefter kan du jämföra villkor, målgrupper och ansökningstider.",
       section2Body2:
         "För den som söker stipendier i Sverige är det ofta värdefullt att söka regelbundet. Nya möjligheter tillkommer löpande och flera stipendier har fasta perioder under året.",
+      section3Title: "Så ökar du chansen att hitta rätt stipendium i Sverige",
+      section3Body1:
+        "Eftersom utbudet av stipendier i Sverige är brett är det smart att kombinera breda sökningar med mer specifika termer som stad, utbildning eller behov. Då hittar du lättare rätt bland både generella och nischade stipendier.",
+      section3Body2:
+        "Många söker för smalt eller för sent. Den som söker i god tid och jämför flera svenska stipendier samtidigt får ofta betydligt bättre träffsäkerhet.",
       faqBody:
         "Vanliga frågor handlar om vem som kan söka stipendier i Sverige, om svenska stipendier är skattefria och hur man hittar rätt stiftelser. Eftersom reglerna skiljer sig åt bör varje stipendium läsas igenom för sig.",
+      ctaTitle: "Hitta stipendier i Sverige hos Fundbridge",
+      ctaBody:
+        "Fundbridge är byggt för att göra det enklare att hitta stipendier i Sverige. På denna sida kan du se hur många stipendier som matchar Sverige-relaterade sökningar och gå vidare till rätt resultat direkt.",
     },
     goteborg: {
       displayTerm: "Göteborg",
@@ -182,6 +295,11 @@ function getPageCopy(slug: string): PageCopy {
         "Börja med att jämföra lokala stipendier och kontrollera om bostadsort, studieort eller annan lokal anknytning krävs. Flera stipendier har särskilda kriterier som är vanliga just i lokala stiftelser.",
       section2Body2:
         "Den som söker stipendier i Göteborg bör också hålla koll på återkommande ansökningsperioder. Många fonder återkommer varje år men med begränsade tidsfönster.",
+      section3Title: "Så ökar du chansen att hitta rätt stipendium i Göteborg",
+      section3Body1:
+        "Lokala stipendier kan ibland vara lättare att missa än nationella, men de kan också ha lägre konkurrens. Därför är det smart att leta efter stipendier där anknytningen till Göteborg faktiskt är en fördel.",
+      section3Body2:
+        "Om du bor, studerar eller har annan tydlig koppling till Göteborg bör du lyfta det tidigt i ansökan. Det kan vara avgörande i flera lokala fonder och stiftelser.",
     },
     malmo: {
       displayTerm: "Malmö",
@@ -202,6 +320,11 @@ function getPageCopy(slug: string): PageCopy {
         "Jämför kriterier som bostadsort, studieort och målgrupp. Många lokala stipendier prioriterar sökande som har tydlig anknytning till Malmö eller Skåne.",
       section2Body2:
         "För att lyckas bättre med stipendier i Malmö är det smart att söka regelbundet och hålla koll på om specifika lokala stiftelser öppnar ansökan under vissa delar av året.",
+      section3Title: "Så ökar du chansen att hitta stipendium i Malmö",
+      section3Body1:
+        "När du söker stipendier i Malmö är det bra att vara tydlig med din lokala anknytning, till exempel om du bor i staden, studerar där eller har annan relevant koppling.",
+      section3Body2:
+        "Det är också klokt att kombinera lokala sökningar med bredare sökningar för studenter, behövande eller specifika utbildningar. Då missar du inte stipendier som är relevanta men inte uttryckligen marknadsförs som lokala.",
     },
     ekonomi: {
       title: "Stipendier inom ekonomi",
@@ -424,14 +547,12 @@ function getPageCopy(slug: string): PageCopy {
   return {
     ...defaults,
     ...custom[slug],
-    displayTerm:
-      custom[slug]?.displayTerm ?? defaults.displayTerm,
+    displayTerm: custom[slug]?.displayTerm ?? defaults.displayTerm,
   };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const copy = getPageCopy(params.slug);
-  const titleTerm = formatTitle(copy.title.replace(/^Stipendier (för |i |inom )/i, ""));
   const canonicalUrl = `https://www.fundbridge.se/sok/${params.slug}`;
 
   return {
@@ -500,26 +621,35 @@ export default async function Page({ params }: Props) {
     mainEntity: [
       {
         "@type": "Question",
-        name: `Vad finns det för stipendier för ${copy.displayTerm}?`,
+        name:
+          copy.displayTerm === "Sverige"
+            ? "Vilka stipendier finns i Sverige?"
+            : `Vad finns det för stipendier för ${copy.displayTerm}?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: copy.section1Body1,
+          text: `${copy.section1Body1} ${copy.section1Body2}`,
         },
       },
       {
         "@type": "Question",
-        name: `Hur hittar man stipendier för ${copy.displayTerm}?`,
+        name:
+          copy.displayTerm === "Sverige"
+            ? "Hur hittar man rätt stipendium i Sverige?"
+            : `Hur hittar man stipendier för ${copy.displayTerm}?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: copy.section2Body1,
+          text: `${copy.section2Body1} ${copy.section2Body2}`,
         },
       },
       {
         "@type": "Question",
-        name: `Hur söker man stipendier för ${copy.displayTerm}?`,
+        name:
+          copy.displayTerm === "Sverige"
+            ? "Hur ökar man chansen att få stipendium i Sverige?"
+            : `Hur ökar man chansen att få stipendium för ${copy.displayTerm}?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: copy.faqBody,
+          text: `${copy.section3Body1} ${copy.section3Body2}`,
         },
       },
     ],
@@ -550,6 +680,20 @@ export default async function Page({ params }: Props) {
     ],
   };
 
+  const webPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: copy.title,
+    description: copy.description,
+    url: canonicalUrl,
+    inLanguage: "sv-SE",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Fundbridge",
+      url: "https://www.fundbridge.se",
+    },
+  };
+
   return (
     <main
       style={{
@@ -560,6 +704,12 @@ export default async function Page({ params }: Props) {
         color: "#111827",
       }}
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(webPageJsonLd),
+        }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -784,6 +934,41 @@ export default async function Page({ params }: Props) {
                 letterSpacing: "-0.03em",
               }}
             >
+              {copy.section3Title}
+            </h2>
+
+            <p
+              style={{
+                margin: 0,
+                fontSize: 16,
+                lineHeight: 1.8,
+                color: "#374151",
+              }}
+            >
+              {copy.section3Body1}
+            </p>
+
+            <p
+              style={{
+                marginTop: 14,
+                fontSize: 16,
+                lineHeight: 1.8,
+                color: "#374151",
+              }}
+            >
+              {copy.section3Body2}
+            </p>
+          </section>
+
+          <section style={{ marginTop: 36 }}>
+            <h2
+              style={{
+                margin: "0 0 14px 0",
+                fontSize: 28,
+                lineHeight: 1.2,
+                letterSpacing: "-0.03em",
+              }}
+            >
               Exempel på stipendier för {copy.displayTerm}
             </h2>
 
@@ -949,7 +1134,7 @@ export default async function Page({ params }: Props) {
                 letterSpacing: "-0.03em",
               }}
             >
-              Hitta stipendier för {copy.displayTerm} hos Fundbridge
+              {copy.ctaTitle}
             </h2>
 
             <p
@@ -960,10 +1145,7 @@ export default async function Page({ params }: Props) {
                 color: "#374151",
               }}
             >
-              Fundbridge är byggt för att göra det enklare att hitta stipendier i
-              Sverige. På denna sida kan du se hur många stipendier som matchar{" "}
-              {copy.displayTerm}, få inspiration och sedan gå vidare till
-              sökningen för att hitta rätt alternativ för just dig.
+              {copy.ctaBody}
             </p>
 
             <div style={{ marginTop: 18 }}>

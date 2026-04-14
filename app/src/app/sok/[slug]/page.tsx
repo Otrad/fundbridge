@@ -52,6 +52,22 @@ const PRIORITY_SLUGS = [
   "sjukskoterska",
   "resa",
   "forskning",
+
+  // nya prioriterade SEO-sluggar
+  "master",
+  "kandidat",
+  "gymnasieelev",
+  "kvinnor",
+  "utbyte",
+  "examensarbete",
+  "doktorand",
+  "entreprenor",
+  "konst",
+  "musik",
+  "idrott",
+  "universitet",
+  "student",
+  "unga",
 ];
 
 const slugDisplayMap: Record<string, string> = {
@@ -71,6 +87,21 @@ const slugDisplayMap: Record<string, string> = {
   sjukskoterska: "sjuksköterska",
   resa: "resa",
   forskning: "forskning",
+
+  master: "masterstudier",
+  kandidat: "kandidatstudier",
+  gymnasieelev: "gymnasieelever",
+  kvinnor: "kvinnor",
+  utbyte: "utbytesstudier",
+  examensarbete: "examensarbete",
+  doktorand: "doktorander",
+  entreprenor: "entreprenörer",
+  konst: "konst",
+  musik: "musik",
+  idrott: "idrott",
+  universitet: "universitet",
+  student: "student",
+  unga: "unga",
 };
 
 export function generateStaticParams() {
@@ -96,9 +127,27 @@ function getRelatedLinks(slug: string) {
     { label: "Stipendier i Lund", href: "/sok/lund" },
     { label: "Stipendier inom ekonomi", href: "/sok/ekonomi" },
     { label: "Stipendier för ingenjörsstudier", href: "/sok/ingenjor" },
-    { label: "Stipendier för sjuksköterskor", href: "/sok/sjukskoterska" },
+    {
+      label: "Stipendier för sjuksköterskor",
+      href: "/sok/sjukskoterska",
+    },
     { label: "Stipendier för resa", href: "/sok/resa" },
     { label: "Stipendier för forskning", href: "/sok/forskning" },
+
+    { label: "Stipendier för masterstudier", href: "/sok/master" },
+    { label: "Stipendier för kandidatstudier", href: "/sok/kandidat" },
+    { label: "Stipendier för gymnasieelever", href: "/sok/gymnasieelev" },
+    { label: "Stipendier för kvinnor", href: "/sok/kvinnor" },
+    { label: "Stipendier för utbytesstudier", href: "/sok/utbyte" },
+    { label: "Stipendier för examensarbete", href: "/sok/examensarbete" },
+    { label: "Stipendier för doktorander", href: "/sok/doktorand" },
+    { label: "Stipendier för entreprenörer", href: "/sok/entreprenor" },
+    { label: "Stipendier inom konst", href: "/sok/konst" },
+    { label: "Stipendier inom musik", href: "/sok/musik" },
+    { label: "Stipendier inom idrott", href: "/sok/idrott" },
+    { label: "Stipendier för universitet", href: "/sok/universitet" },
+    { label: "Stipendier för student", href: "/sok/student" },
+    { label: "Stipendier för unga", href: "/sok/unga" },
   ];
 
   const clusters: Record<string, string[]> = {
@@ -109,6 +158,9 @@ function getRelatedLinks(slug: string) {
       "/sok/juridikstudent",
       "/sok/medicin",
       "/sok/ekonomi",
+      "/sok/master",
+      "/sok/kandidat",
+      "/sok/student",
     ],
     behovande: [
       "/sok/studenter",
@@ -125,6 +177,8 @@ function getRelatedLinks(slug: string) {
       "/sok/goteborg",
       "/sok/malmo",
       "/sok/utlandsstudier",
+      "/sok/universitet",
+      "/sok/unga",
     ],
     juridikstudent: [
       "/sok/studenter",
@@ -133,6 +187,7 @@ function getRelatedLinks(slug: string) {
       "/sok/uppsala",
       "/sok/lund",
       "/sok/behovande",
+      "/sok/master",
     ],
     medicin: [
       "/sok/studenter",
@@ -141,6 +196,7 @@ function getRelatedLinks(slug: string) {
       "/sok/utlandsstudier",
       "/sok/stockholm",
       "/sok/lund",
+      "/sok/doktorand",
     ],
     utlandsstudier: [
       "/sok/studenter",
@@ -149,6 +205,120 @@ function getRelatedLinks(slug: string) {
       "/sok/medicin",
       "/sok/ekonomi",
       "/sok/ingenjor",
+      "/sok/utbyte",
+      "/sok/master",
+    ],
+    master: [
+      "/sok/studenter",
+      "/sok/kandidat",
+      "/sok/utlandsstudier",
+      "/sok/utbyte",
+      "/sok/ekonomi",
+      "/sok/ingenjor",
+    ],
+    kandidat: [
+      "/sok/studenter",
+      "/sok/master",
+      "/sok/universitet",
+      "/sok/stockholm",
+      "/sok/uppsala",
+      "/sok/lund",
+    ],
+    gymnasieelev: [
+      "/sok/unga",
+      "/sok/studenter",
+      "/sok/stockholm",
+      "/sok/goteborg",
+      "/sok/malmo",
+      "/sok/sverige",
+    ],
+    kvinnor: [
+      "/sok/studenter",
+      "/sok/behovande",
+      "/sok/sverige",
+      "/sok/stockholm",
+      "/sok/utlandsstudier",
+      "/sok/unga",
+    ],
+    utbyte: [
+      "/sok/utlandsstudier",
+      "/sok/resa",
+      "/sok/studenter",
+      "/sok/master",
+      "/sok/kandidat",
+      "/sok/universitet",
+    ],
+    examensarbete: [
+      "/sok/studenter",
+      "/sok/master",
+      "/sok/kandidat",
+      "/sok/ekonomi",
+      "/sok/ingenjor",
+      "/sok/forskning",
+    ],
+    doktorand: [
+      "/sok/forskning",
+      "/sok/medicin",
+      "/sok/studenter",
+      "/sok/utlandsstudier",
+      "/sok/universitet",
+      "/sok/ekonomi",
+    ],
+    entreprenor: [
+      "/sok/ekonomi",
+      "/sok/studenter",
+      "/sok/stockholm",
+      "/sok/sverige",
+      "/sok/unga",
+      "/sok/master",
+    ],
+    konst: [
+      "/sok/musik",
+      "/sok/idrott",
+      "/sok/resa",
+      "/sok/stockholm",
+      "/sok/goteborg",
+      "/sok/malmo",
+    ],
+    musik: [
+      "/sok/konst",
+      "/sok/idrott",
+      "/sok/stockholm",
+      "/sok/goteborg",
+      "/sok/malmo",
+      "/sok/resa",
+    ],
+    idrott: [
+      "/sok/unga",
+      "/sok/konst",
+      "/sok/musik",
+      "/sok/stockholm",
+      "/sok/goteborg",
+      "/sok/malmo",
+    ],
+    universitet: [
+      "/sok/studenter",
+      "/sok/student",
+      "/sok/master",
+      "/sok/kandidat",
+      "/sok/utlandsstudier",
+      "/sok/examensarbete",
+    ],
+    student: [
+      "/sok/studenter",
+      "/sok/universitet",
+      "/sok/master",
+      "/sok/kandidat",
+      "/sok/stockholm",
+      "/sok/utlandsstudier",
+    ],
+    unga: [
+      "/sok/gymnasieelev",
+      "/sok/studenter",
+      "/sok/kvinnor",
+      "/sok/stockholm",
+      "/sok/sverige",
+      "/sok/idrott",
     ],
   };
 
@@ -541,6 +711,427 @@ function getPageCopy(slug: string): PageCopy {
         "Börja med att kontrollera vilka stipendier som kräver lokal anknytning. Många lokala fonder prioriterar sökande som har en tydlig koppling till Lund.",
       section2Body2:
         "Genom att söka regelbundet och jämföra flera stipendier samtidigt blir det lättare att hitta rätt möjlighet.",
+    },
+
+    master: {
+      displayTerm: "masterstudier",
+      title: "Stipendier för masterstudier",
+      description:
+        "Hitta stipendier för masterstudier i Sverige och utomlands. Jämför relevanta stipendier för masterprogram hos Fundbridge.",
+      intro:
+        "Här hittar du stipendier för masterstudier. Fundbridge hjälper dig att hitta stipendier som kan passa dig som planerar eller redan läser ett masterprogram i Sverige eller utomlands.",
+      intro2:
+        "Många stipendier för masterstudier är kopplade till utbildningsnivå, ämnesområde, lärosäte eller internationella studier. Därför är det viktigt att jämföra flera olika möjligheter.",
+      section1Title: "Vilka stipendier finns för masterstudier?",
+      section1Body1:
+        "Det finns stipendier för masterstudier från stiftelser, universitet, internationella program och privata fonder. Vissa riktar sig till särskilda ämnen medan andra är öppna för flera typer av masterutbildningar.",
+      section1Body2:
+        "Den som söker stipendier för masterstudier bör titta både på generella studentstipendier och stipendier som är särskilt inriktade på avancerad nivå eller internationella studier.",
+      section2Title: "Så hittar du stipendier för masterstudier",
+      section2Body1:
+        "Börja med att kontrollera om stipendiet gäller ett visst universitet, en viss utbildningsnivå eller särskilda akademiska meriter. Många stipendier för masterstudier har tydliga krav på studieplan och mål.",
+      section2Body2:
+        "En stark ansökan för masterstipendium beskriver ofta varför utbildningen är viktig, hur den passar din framtida plan och hur stipendiet skulle användas i praktiken.",
+      section3Title: "Så ökar du chansen att få stipendium för masterstudier",
+      section3Body1:
+        "För masterstudier är det ofta viktigt att vara tydlig med ditt ämnesval, din akademiska bakgrund och varför du söker just det aktuella stipendiet. Anpassning gör stor skillnad.",
+      section3Body2:
+        "Det hjälper också att söka flera stipendier samtidigt och vara ute i god tid, särskilt om utbildningen ligger utomlands eller har höga kostnader kopplade till resa och boende.",
+      faqBody:
+        "Vanliga frågor handlar om vem som kan söka stipendier för masterstudier, om stipendier gäller både Sverige och utlandet samt vilka dokument som krävs. Det varierar mellan olika stipendier, så läs alltid villkoren noggrant.",
+      ctaTitle: "Hitta stipendier för masterstudier hos Fundbridge",
+      ctaBody:
+        "På Fundbridge kan du snabbt se hur många stipendier som matchar masterstudier och hitta relevanta alternativ utan att leta på många olika platser.",
+    },
+    kandidat: {
+      displayTerm: "kandidatstudier",
+      title: "Stipendier för kandidatstudier",
+      description:
+        "Hitta stipendier för kandidatstudier i Sverige. Jämför stipendier för kandidatprogram och andra grundutbildningar hos Fundbridge.",
+      intro:
+        "Här hittar du stipendier för kandidatstudier. Fundbridge hjälper dig att hitta stipendier för kandidatprogram, grundutbildningar och andra studier på universitetsnivå.",
+      intro2:
+        "Många stipendier för kandidatstudier är kopplade till ämnesområde, studieort, ekonomisk situation eller personliga förutsättningar. Därför lönar det sig att söka både brett och specifikt.",
+      section1Title: "Vilka stipendier finns för kandidatstudier?",
+      section1Body1:
+        "Det finns stipendier för kandidatstudier från stiftelser, universitet, fonder och privata donationer. Vissa stipendier gäller alla studenter medan andra är mer avgränsade till specifika utbildningar eller grupper.",
+      section1Body2:
+        "För den som söker stipendier för kandidatstudier är det ofta smart att kombinera breda studentstipendier med mer nischade stipendier kopplade till ämne, ort eller behov.",
+      section2Title: "Så hittar du stipendier för kandidatstudier",
+      section2Body1:
+        "Börja med att jämföra stipendiernas målgrupp, ansökningskrav och om de gäller en viss utbildning eller ett visst lärosäte. Det gör det lättare att hitta rätt stipendier snabbare.",
+      section2Body2:
+        "En bra ansökan för kandidatstudier förklarar vad du ska läsa, varför utbildningen är viktig och hur stipendiet skulle hjälpa dig under studietiden.",
+      section3Title: "Så ökar du chansen att få stipendium för kandidatstudier",
+      section3Body1:
+        "Var konkret med din studieplan, din bakgrund och varför du passar stipendiets målgrupp. Många stipendier bedömer tydlighet och relevans högt.",
+      section3Body2:
+        "Den som söker flera stipendier parallellt och anpassar varje ansökan har ofta betydligt bättre chans att hitta finansiering än den som skickar samma text överallt.",
+      faqBody:
+        "Vanliga frågor handlar om när man kan söka stipendier för kandidatstudier, om stipendier gäller hela program eller en termin och vilka dokument som behövs. Villkoren varierar mellan olika stiftelser och fonder.",
+      ctaTitle: "Hitta stipendier för kandidatstudier hos Fundbridge",
+      ctaBody:
+        "Fundbridge gör det enklare att hitta stipendier för kandidatstudier genom att samla relevanta möjligheter på ett ställe och visa hur många som matchar din sökning.",
+    },
+    gymnasieelev: {
+      displayTerm: "gymnasieelever",
+      title: "Stipendier för gymnasieelever",
+      description:
+        "Hitta stipendier för gymnasieelever i Sverige. Jämför stipendier och ekonomiskt stöd för gymnasiestudier hos Fundbridge.",
+      intro:
+        "Här hittar du stipendier för gymnasieelever i Sverige. Fundbridge hjälper dig att hitta stipendier och stöd som kan vara relevanta under gymnasietiden eller i samband med vidare studier.",
+      intro2:
+        "Många stipendier för gymnasieelever riktar sig till särskilda behov, prestationer, projekt eller framtida studier. Därför är det viktigt att jämföra flera möjligheter.",
+      section1Title: "Vilka stipendier finns för gymnasieelever?",
+      section1Body1:
+        "Det finns stipendier för gymnasieelever från stiftelser, lokala fonder, kommunala initiativ och privata donationer. Vissa gäller studiemotivation eller prestation, andra riktar sig till unga med särskilda behov eller mål.",
+      section1Body2:
+        "För gymnasieelever kan både små och stora stipendier vara värdefulla, särskilt om de hjälper till med studier, utrustning, resa eller framtida utbildningsplaner.",
+      section2Title: "Så hittar du stipendier för gymnasieelever",
+      section2Body1:
+        "Börja med att titta på om stipendiet riktar sig till unga, gymnasieelever, studiemotiverade elever eller personer med särskild lokal anknytning. Det gör sökningen mer träffsäker.",
+      section2Body2:
+        "Det är också klokt att hålla koll på stipendier som kan sökas inför högskolestudier, eftersom vissa möjligheter blir relevanta redan under gymnasiet.",
+      section3Title: "Så ökar du chansen att få stipendium som gymnasieelev",
+      section3Body1:
+        "En tydlig ansökan där du beskriver dina mål, din situation och varför stödet skulle göra skillnad kan vara avgörande. Många stipendier vill förstå både behov och ambition.",
+      section3Body2:
+        "Sök gärna flera stipendier samtidigt och var ute i god tid. För unga sökande kan konkurrensen ibland vara lägre i mindre kända stipendier.",
+      faqBody:
+        "Vanliga frågor handlar om vilka gymnasieelever som kan söka stipendier, om vårdnadshavare behöver vara involverade och vilka underlag som krävs. Det varierar mellan olika stipendier.",
+      ctaTitle: "Hitta stipendier för gymnasieelever hos Fundbridge",
+      ctaBody:
+        "Fundbridge hjälper dig att snabbt hitta stipendier för gymnasieelever och jämföra relevanta alternativ utan att behöva leta på många olika webbplatser.",
+    },
+    kvinnor: {
+      displayTerm: "kvinnor",
+      title: "Stipendier för kvinnor",
+      description:
+        "Hitta stipendier för kvinnor i Sverige. Jämför stipendier för studier, projekt och andra möjligheter hos Fundbridge.",
+      intro:
+        "Här hittar du stipendier för kvinnor i Sverige. Fundbridge hjälper dig att hitta stipendier som riktar sig till kvinnor inom studier, utveckling, projekt och andra områden.",
+      intro2:
+        "Många stipendier för kvinnor är kopplade till utbildning, entreprenörskap, sociala behov, ledarskap eller särskilda satsningar inom vissa ämnesområden.",
+      section1Title: "Vilka stipendier finns för kvinnor?",
+      section1Body1:
+        "Det finns stipendier för kvinnor från stiftelser, organisationer, nätverk och privata donationer. Vissa är breda och öppna för många typer av ansökningar, medan andra riktar sig till specifika mål eller situationer.",
+      section1Body2:
+        "Den som söker stipendier för kvinnor kan ofta hitta möjligheter både inom studier, karriärutveckling, internationella projekt och personligt stöd beroende på stipendiets syfte.",
+      section2Title: "Så hittar du stipendier för kvinnor",
+      section2Body1:
+        "Börja med att identifiera om du söker stipendier för utbildning, projekt, företagande eller andra ändamål. Då blir det lättare att välja rätt stipendier att fokusera på.",
+      section2Body2:
+        "Läs villkoren noggrant och kontrollera om stipendiet också har ytterligare krav, till exempel koppling till ort, utbildning eller särskild bakgrund.",
+      section3Title: "Så ökar du chansen att få stipendium för kvinnor",
+      section3Body1:
+        "En bra ansökan visar tydligt varför du passar stipendiets målgrupp, hur stödet skulle användas och vilken effekt det skulle få för dig eller ditt projekt.",
+      section3Body2:
+        "Det är också klokt att söka flera olika stipendier samtidigt, eftersom många stipendier för kvinnor skiljer sig mycket åt i både syfte och krav.",
+      faqBody:
+        "Vanliga frågor handlar om vilka stipendier som specifikt riktar sig till kvinnor, om man kan söka flera samtidigt och hur man hittar rätt målgrupp. Det varierar mellan olika stiftelser och organisationer.",
+      ctaTitle: "Hitta stipendier för kvinnor hos Fundbridge",
+      ctaBody:
+        "På Fundbridge kan du se hur många stipendier som matchar kvinnor och snabbt gå vidare till relevanta resultat i databasen.",
+    },
+    utbyte: {
+      displayTerm: "utbytesstudier",
+      title: "Stipendier för utbytesstudier",
+      description:
+        "Hitta stipendier för utbytesstudier och studier utomlands. Jämför relevanta möjligheter hos Fundbridge.",
+      intro:
+        "Här hittar du stipendier för utbytesstudier. Fundbridge hjälper dig att hitta stipendier och finansiering för studier utomlands under en termin, ett år eller ett särskilt program.",
+      intro2:
+        "Många stipendier för utbytesstudier är kopplade till universitet, destination, ämnesområde eller särskilda internationella program. Därför är det viktigt att söka både brett och specifikt.",
+      section1Title: "Vilka stipendier finns för utbytesstudier?",
+      section1Body1:
+        "Det finns stipendier för utbytesstudier från universitet, stiftelser, internationella program och andra organisationer. Vissa gäller specifika länder eller samarbeten, medan andra är mer generella.",
+      section1Body2:
+        "För den som planerar utbytesstudier är det ofta smart att kombinera stipendier för utlandsstudier med resestipendier och studentstipendier för att hitta fler alternativ.",
+      section2Title: "Så hittar du stipendier för utbytesstudier",
+      section2Body1:
+        "Börja med att kontrollera om stipendiet gäller ditt lärosäte, destination eller utbildningsområde. Många stipendier för utbytesstudier har tydliga krav kopplade till studieplan och syfte.",
+      section2Body2:
+        "En stark ansökan beskriver varför utbytet är viktigt för din utbildning, vilka kostnader som finns och hur stipendiet skulle göra skillnad.",
+      section3Title: "Så ökar du chansen att få stipendium för utbytesstudier",
+      section3Body1:
+        "Var tydlig med vart du ska åka, varför du valt just den platsen och hur utbytet passar dina akademiska eller personliga mål.",
+      section3Body2:
+        "Sök flera olika typer av stipendier i god tid. Internationella stipendier har ofta fasta ansökningsperioder och tydliga dokumentkrav.",
+      faqBody:
+        "Vanliga frågor handlar om vilka länder och universitet som omfattas, om man kan kombinera flera stödformer och vilka dokument som behövs. Det skiljer sig mellan olika stipendier.",
+      ctaTitle: "Hitta stipendier för utbytesstudier hos Fundbridge",
+      ctaBody:
+        "Fundbridge gör det enklare att hitta stipendier för utbytesstudier genom att samla relevanta möjligheter och visa hur många som matchar din sökning.",
+    },
+    examensarbete: {
+      displayTerm: "examensarbete",
+      title: "Stipendier för examensarbete",
+      description:
+        "Hitta stipendier för examensarbete i Sverige. Jämför stipendier för uppsatser, projekt och slutarbeten hos Fundbridge.",
+      intro:
+        "Här hittar du stipendier för examensarbete. Fundbridge hjälper dig att hitta stipendier som kan passa examensarbeten, uppsatser och andra avslutande projekt inom högre utbildning.",
+      intro2:
+        "Många stipendier för examensarbete är kopplade till ämnesområde, projektets syfte, forskning eller praktisk tillämpning. Därför är det viktigt att matcha ansökan mot rätt typ av stöd.",
+      section1Title: "Vilka stipendier finns för examensarbete?",
+      section1Body1:
+        "Det finns stipendier för examensarbete från stiftelser, universitet, näringslivsanknutna fonder och andra organisationer. Vissa riktar sig till särskilda ämnen medan andra är öppna för flera områden.",
+      section1Body2:
+        "För den som söker stipendier för examensarbete kan det vara smart att också titta på stipendier för forskning, resa eller specifika utbildningar beroende på projektets upplägg.",
+      section2Title: "Så hittar du stipendier för examensarbete",
+      section2Body1:
+        "Börja med att identifiera projektets ämne, syfte och om det finns kostnader för exempelvis resa, material eller datainsamling. Det hjälper dig att hitta mer relevanta stipendier.",
+      section2Body2:
+        "En bra ansökan för examensarbete beskriver tydligt vad projektet handlar om, varför det är viktigt och hur stipendiet skulle användas.",
+      section3Title: "Så ökar du chansen att få stipendium för examensarbete",
+      section3Body1:
+        "Var konkret med projektets mål, metod och förväntat resultat. Många stipendier prioriterar ansökningar som tydligt visar värde och genomförbarhet.",
+      section3Body2:
+        "Sök gärna flera stipendier samtidigt, särskilt om examensarbetet har koppling till ett ämnesområde där det finns fler riktade möjligheter.",
+      faqBody:
+        "Vanliga frågor handlar om vilka typer av examensarbeten som kan få stöd, om stipendiet kan användas för resa eller material och hur detaljerad ansökan behöver vara. Det varierar mellan olika stipendier.",
+      ctaTitle: "Hitta stipendier för examensarbete hos Fundbridge",
+      ctaBody:
+        "På Fundbridge kan du snabbt se hur många stipendier som matchar examensarbete och hitta relevanta möjligheter utan att behöva söka på flera olika håll.",
+    },
+    doktorand: {
+      displayTerm: "doktorander",
+      title: "Stipendier för doktorander",
+      description:
+        "Hitta stipendier för doktorander och forskarutbildning i Sverige. Jämför relevanta stipendier hos Fundbridge.",
+      intro:
+        "Här hittar du stipendier för doktorander i Sverige. Fundbridge hjälper dig att hitta stipendier för forskarutbildning, akademiska projekt och vidare forskning.",
+      intro2:
+        "Många stipendier för doktorander är kopplade till forskningsområde, konferenser, internationella samarbeten eller särskilda akademiska projekt.",
+      section1Title: "Vilka stipendier finns för doktorander?",
+      section1Body1:
+        "Det finns stipendier för doktorander från stiftelser, forskningsfonder, universitet och professionella organisationer. Vissa riktar sig till särskilda ämnen, medan andra är bredare.",
+      section1Body2:
+        "För doktorander kan stipendier vara relevanta för forskning, resor, konferenser, fältarbete eller internationella samarbeten beroende på projektets behov.",
+      section2Title: "Så hittar du stipendier för doktorander",
+      section2Body1:
+        "Börja med att kontrollera om stipendiet gäller ett visst forskningsområde, en viss nivå eller en särskild typ av aktivitet. Det gör sökningen betydligt mer träffsäker.",
+      section2Body2:
+        "En stark ansökan för doktorandstipendium beskriver projektets mål, akademiska betydelse och hur stödet skulle bidra till forskningen.",
+      section3Title: "Så ökar du chansen att få stipendium som doktorand",
+      section3Body1:
+        "Var tydlig med ditt forskningsområde, projektets nytta och varför du söker just den aktuella finansieringen. Relevans väger ofta tungt.",
+      section3Body2:
+        "Sök gärna flera stipendier och håll koll på återkommande ansökningsperioder. Många forskningsrelaterade stipendier har begränsade fönster varje år.",
+      faqBody:
+        "Vanliga frågor handlar om vilka doktorander som kan söka stipendier, om stödet gäller forskning eller resor och vilka underlag som krävs. Reglerna varierar mellan olika stiftelser och fonder.",
+      ctaTitle: "Hitta stipendier för doktorander hos Fundbridge",
+      ctaBody:
+        "Fundbridge gör det enklare att hitta stipendier för doktorander genom att samla relevanta möjligheter och visa hur många som matchar din sökning.",
+    },
+    entreprenor: {
+      displayTerm: "entreprenörer",
+      title: "Stipendier för entreprenörer",
+      description:
+        "Hitta stipendier för entreprenörer i Sverige. Jämför stöd och finansieringsmöjligheter för entreprenörskap hos Fundbridge.",
+      intro:
+        "Här hittar du stipendier för entreprenörer i Sverige. Fundbridge hjälper dig att hitta stipendier och stöd som kan vara relevanta för företagande, idéutveckling och entreprenöriella projekt.",
+      intro2:
+        "Många stipendier för entreprenörer är kopplade till innovation, samhällsnytta, utbildning eller särskilda målgrupper. Därför är det viktigt att söka brett men smart.",
+      section1Title: "Vilka stipendier finns för entreprenörer?",
+      section1Body1:
+        "Det finns stipendier och stödformer för entreprenörer från stiftelser, organisationer, nätverk och olika initiativ inom näringsliv och innovation. Vissa gäller tidiga idéer, andra tillväxt eller särskilda grupper.",
+      section1Body2:
+        "För den som söker stipendier för entreprenörer är det ofta klokt att även titta på stipendier inom ekonomi, kvinnor, unga eller utbildning beroende på projektets inriktning.",
+      section2Title: "Så hittar du stipendier för entreprenörer",
+      section2Body1:
+        "Börja med att definiera vilken typ av stöd du söker, till exempel utveckling, utbildning, projektmedel eller möjlighet att testa en idé. Då blir urvalet mer relevant.",
+      section2Body2:
+        "En bra ansökan visar tydligt vad idén går ut på, vilket problem den löser och hur stödet skulle användas för att skapa verklig effekt.",
+      section3Title: "Så ökar du chansen att få stipendium som entreprenör",
+      section3Body1:
+        "Var konkret med projektets mål, målgrupp och nästa steg. Många stipendier för entreprenörer bedömer tydlighet, potential och genomförbarhet.",
+      section3Body2:
+        "Det är också smart att söka flera olika typer av stöd, eftersom entreprenörsstipendier kan ligga nära både utbildning, innovation och social utveckling.",
+      faqBody:
+        "Vanliga frågor handlar om vilka entreprenörer som kan söka stipendier, om företag måste vara registrerat och hur man beskriver sin idé på bästa sätt. Det varierar mellan olika initiativ.",
+      ctaTitle: "Hitta stipendier för entreprenörer hos Fundbridge",
+      ctaBody:
+        "På Fundbridge kan du snabbt hitta stipendier för entreprenörer och se hur många möjligheter som matchar din sökning innan du går vidare.",
+    },
+    konst: {
+      displayTerm: "konst",
+      title: "Stipendier inom konst",
+      description:
+        "Hitta stipendier inom konst i Sverige. Jämför relevanta stipendier för konstnärer, studier och projekt hos Fundbridge.",
+      intro:
+        "Här hittar du stipendier inom konst i Sverige. Fundbridge hjälper dig att hitta stipendier för konstnärliga projekt, utbildningar och utveckling inom olika konstområden.",
+      intro2:
+        "Många stipendier inom konst är kopplade till skapande, utbildning, utställningar, projekt eller särskilda konstnärliga mål. Därför är det viktigt att söka både brett och nischat.",
+      section1Title: "Vilka stipendier finns inom konst?",
+      section1Body1:
+        "Det finns stipendier inom konst från stiftelser, kulturfonder, privata donationer och olika organisationer. Vissa riktar sig till studenter, andra till yrkesverksamma eller särskilda projekt.",
+      section1Body2:
+        "För den som söker stipendier inom konst kan både lokala, nationella och ämnesspecifika stipendier vara relevanta beroende på bakgrund och syfte.",
+      section2Title: "Så hittar du stipendier inom konst",
+      section2Body1:
+        "Börja med att titta på om stipendiet gäller utbildning, skapande arbete, projekt eller resa. Många konststipendier har tydliga krav på inriktning och användningsområde.",
+      section2Body2:
+        "En stark ansökan beskriver ditt konstnärliga arbete, vad du vill genomföra och hur stipendiet skulle bidra till utvecklingen av projektet.",
+      section3Title: "Så ökar du chansen att få stipendium inom konst",
+      section3Body1:
+        "Var tydlig med ditt uttryck, ditt syfte och varför du söker just det aktuella stipendiet. Relevans och tydlighet kan göra stor skillnad i bedömningen.",
+      section3Body2:
+        "Det är också klokt att söka flera stipendier samtidigt, särskilt om du arbetar i ett område där det finns både kulturstöd och bredare projektstöd.",
+      faqBody:
+        "Vanliga frågor handlar om vilka konstområden som omfattas, om stipendier gäller studier eller yrkesverksamhet och hur arbetsprover används. Kraven varierar mellan olika stipendier.",
+      ctaTitle: "Hitta stipendier inom konst hos Fundbridge",
+      ctaBody:
+        "Fundbridge gör det enklare att hitta stipendier inom konst genom att samla relevanta möjligheter på ett ställe och visa hur många som matchar din sökning.",
+    },
+    musik: {
+      displayTerm: "musik",
+      title: "Stipendier inom musik",
+      description:
+        "Hitta stipendier inom musik i Sverige. Jämför relevanta stipendier för musiker, musikstudier och projekt hos Fundbridge.",
+      intro:
+        "Här hittar du stipendier inom musik i Sverige. Fundbridge hjälper dig att hitta stipendier för musikstudier, musikprojekt och andra möjligheter inom musikområdet.",
+      intro2:
+        "Många stipendier inom musik riktar sig till utbildning, utveckling, resor, konserter eller särskilda konstnärliga projekt. Därför kan rätt sökord göra stor skillnad.",
+      section1Title: "Vilka stipendier finns inom musik?",
+      section1Body1:
+        "Det finns stipendier inom musik från stiftelser, kulturfonder, skolor och privata donationer. Vissa riktar sig till unga musiker eller studenter, andra till yrkesverksamma och projekt.",
+      section1Body2:
+        "Den som söker stipendier inom musik kan ofta hitta både generella kulturstipendier och mer nischade möjligheter för instrument, genrer eller särskilda målgrupper.",
+      section2Title: "Så hittar du stipendier inom musik",
+      section2Body1:
+        "Börja med att identifiera om du söker stipendium för studier, instrument, projekt, resa eller utveckling. Det hjälper dig att välja rätt stipendier snabbare.",
+      section2Body2:
+        "En bra ansökan för musikstipendium visar tydligt vad du gör, vad du vill uppnå och hur stödet skulle hjälpa dig vidare.",
+      section3Title: "Så ökar du chansen att få stipendium inom musik",
+      section3Body1:
+        "Var tydlig med inriktning, mål och hur stipendiet passar ditt musikaliska arbete eller din utbildning. Anpassning väger ofta tungt i urvalet.",
+      section3Body2:
+        "Sök gärna flera stipendier samtidigt, särskilt om du också kan vara relevant för bredare kultur- eller studentstipendier.",
+      faqBody:
+        "Vanliga frågor handlar om vilka musiker som kan söka stipendier, om stipendier gäller utbildning eller projekt och om arbetsprover krävs. Det varierar mellan olika stipendier.",
+      ctaTitle: "Hitta stipendier inom musik hos Fundbridge",
+      ctaBody:
+        "På Fundbridge kan du snabbt se hur många stipendier som matchar musik och hitta relevanta möjligheter utan att behöva leta på flera olika ställen.",
+    },
+    idrott: {
+      displayTerm: "idrott",
+      title: "Stipendier inom idrott",
+      description:
+        "Hitta stipendier inom idrott i Sverige. Jämför relevanta stipendier för idrottare, studier och utveckling hos Fundbridge.",
+      intro:
+        "Här hittar du stipendier inom idrott i Sverige. Fundbridge hjälper dig att hitta stipendier för idrottare, träningssatsningar, studier och andra möjligheter inom idrott.",
+      intro2:
+        "Många stipendier inom idrott riktar sig till unga, talanger, föreningsaktiva eller personer som kombinerar idrott med studier. Därför är det viktigt att jämföra olika typer av stöd.",
+      section1Title: "Vilka stipendier finns inom idrott?",
+      section1Body1:
+        "Det finns stipendier inom idrott från stiftelser, föreningar, organisationer och privata donationer. Vissa är kopplade till prestation, andra till utveckling, utbildning eller sociala insatser.",
+      section1Body2:
+        "För den som söker stipendier inom idrott kan både lokala och nationella stipendier vara relevanta, särskilt om det finns koppling till unga, studier eller särskilda satsningar.",
+      section2Title: "Så hittar du stipendier inom idrott",
+      section2Body1:
+        "Börja med att kontrollera om stipendiet gäller en viss sport, en viss ålder, studieinriktning eller geografisk anknytning. Det gör sökningen mer träffsäker.",
+      section2Body2:
+        "En stark ansökan för idrottsstipendium beskriver tydligt vad du satsar på, hur stödet skulle användas och varför det skulle göra skillnad.",
+      section3Title: "Så ökar du chansen att få stipendium inom idrott",
+      section3Body1:
+        "Var konkret med mål, nivå och plan. Många stipendier bedömer både potential och hur genomtänkt satsningen är.",
+      section3Body2:
+        "Det är också klokt att söka flera stipendier och inte bara fokusera på rena idrottsstipendier. Ibland kan även stipendier för unga eller studenter vara relevanta.",
+      faqBody:
+        "Vanliga frågor handlar om vilka idrottare som kan söka stipendier, om stöd gäller individer eller lag och vilka underlag som behövs. Kraven varierar mellan olika stipendier.",
+      ctaTitle: "Hitta stipendier inom idrott hos Fundbridge",
+      ctaBody:
+        "Fundbridge hjälper dig att hitta stipendier inom idrott snabbare genom att samla relevanta möjligheter på ett ställe.",
+    },
+    universitet: {
+      displayTerm: "universitet",
+      title: "Stipendier för universitet",
+      description:
+        "Hitta stipendier för universitet och universitetsstudier i Sverige. Jämför relevanta stipendier hos Fundbridge.",
+      intro:
+        "Här hittar du stipendier för universitet och universitetsstudier i Sverige. Fundbridge hjälper dig att hitta stipendier som är relevanta för olika utbildningar, nivåer och studieorter.",
+      intro2:
+        "Många stipendier för universitetsstudier är kopplade till ämnesområde, studienivå, ort eller särskilda förutsättningar. Därför är det viktigt att söka både brett och precist.",
+      section1Title: "Vilka stipendier finns för universitet?",
+      section1Body1:
+        "Det finns stipendier för universitetsstudier från stiftelser, universitet, fonder och privata givare. Vissa gäller alla studenter på universitet, medan andra riktar sig till särskilda utbildningar eller grupper.",
+      section1Body2:
+        "För den som söker stipendier för universitet är det ofta smart att kombinera breda sökningar med mer nischade sidor för till exempel master, kandidat, ort eller ämnesområde.",
+      section2Title: "Så hittar du stipendier för universitet",
+      section2Body1:
+        "Börja med att identifiera vilken typ av universitetsstudier du söker stöd för. Därefter kan du jämföra stipendiernas målgrupp, villkor och ansökningstider.",
+      section2Body2:
+        "En stark ansökan visar varför du söker stöd, hur det passar dina studier och hur stipendiet skulle användas på ett konkret sätt.",
+      section3Title: "Så ökar du chansen att få stipendium för universitet",
+      section3Body1:
+        "Det hjälper att vara tydlig med utbildningsnivå, ämne och studieort. Många stipendier för universitetsstudier blir mer relevanta när ansökan är väl anpassad.",
+      section3Body2:
+        "Sök gärna flera stipendier samtidigt och kombinera breda stipendier med mer nischade alternativ för att öka chansen till finansiering.",
+      faqBody:
+        "Vanliga frågor handlar om vem som kan söka stipendier för universitet, om stipendier gäller alla lärosäten och hur man hittar rätt nivå. Det varierar mellan olika stipendier och stiftelser.",
+      ctaTitle: "Hitta stipendier för universitet hos Fundbridge",
+      ctaBody:
+        "Fundbridge gör det enklare att hitta stipendier för universitet genom att samla relevanta möjligheter på ett ställe och visa hur många som matchar din sökning.",
+    },
+    student: {
+      displayTerm: "student",
+      title: "Stipendier för student",
+      description:
+        "Hitta stipendier för student i Sverige. Jämför stipendier och finansieringsmöjligheter för studier hos Fundbridge.",
+      intro:
+        "Här hittar du stipendier för student i Sverige. Fundbridge hjälper dig att hitta stipendier och finansieringsmöjligheter som kan passa din utbildning, studieort eller situation.",
+      intro2:
+        "Många som söker stipendier som student börjar brett och går sedan vidare till mer specifika kategorier som ämne, ort eller studienivå. Därför är det viktigt att jämföra flera alternativ.",
+      section1Title: "Vilka stipendier finns för student?",
+      section1Body1:
+        "Det finns många typer av stipendier för studenter från stiftelser, fonder, universitet och organisationer. Vissa är öppna för många sökande, medan andra är avgränsade till specifika utbildningar eller behov.",
+      section1Body2:
+        "Den som söker stipendier för student bör ofta kombinera generella studentstipendier med mer nischade stipendier för till exempel ort, ämnesområde eller internationella studier.",
+      section2Title: "Så hittar du stipendier som student",
+      section2Body1:
+        "Börja med att kontrollera vilka krav som gäller och om stipendiet riktar sig till din utbildning, ort eller situation. Därefter kan du jämföra flera möjligheter samtidigt.",
+      section2Body2:
+        "En tydlig ansökan som beskriver dina studier, dina mål och varför du söker stöd gör det lättare att matcha rätt stipendier.",
+      section3Title: "Så ökar du chansen att få stipendium som student",
+      section3Body1:
+        "Sök flera stipendier parallellt och anpassa varje ansökan. Den som är konkret och tydlig med behov och mål har ofta bättre chans än den som skriver allmänt.",
+      section3Body2:
+        "Det hjälper också att söka i god tid och hålla koll på när olika stipendier öppnar eller stänger för ansökningar.",
+      faqBody:
+        "Vanliga frågor handlar om vem som räknas som student, om man kan söka flera stipendier samtidigt och hur man hittar rätt stipendier snabbast. Det varierar mellan olika stipendier, men ofta är det klokt att söka brett.",
+      ctaTitle: "Hitta stipendier för student hos Fundbridge",
+      ctaBody:
+        "På Fundbridge kan du se hur många stipendier som matchar student och snabbt gå vidare till relevanta resultat i databasen.",
+    },
+    unga: {
+      displayTerm: "unga",
+      title: "Stipendier för unga",
+      description:
+        "Hitta stipendier för unga i Sverige. Jämför stipendier för studier, projekt och utveckling hos Fundbridge.",
+      intro:
+        "Här hittar du stipendier för unga i Sverige. Fundbridge hjälper dig att hitta stipendier och stöd som kan passa unga personer i olika situationer, till exempel studier, projekt eller särskilda satsningar.",
+      intro2:
+        "Många stipendier för unga är kopplade till utbildning, idéer, prestationer, sociala behov eller lokala initiativ. Därför är det viktigt att söka brett och jämföra olika typer av möjligheter.",
+      section1Title: "Vilka stipendier finns för unga?",
+      section1Body1:
+        "Det finns stipendier för unga från stiftelser, föreningar, kommuner och privata donationer. Vissa riktar sig till gymnasieelever eller studenter, andra till unga med särskilda mål, projekt eller behov.",
+      section1Body2:
+        "För den som söker stipendier för unga kan både små och stora stipendier vara värdefulla, särskilt om de hjälper till med studier, utrustning, resor eller personlig utveckling.",
+      section2Title: "Så hittar du stipendier för unga",
+      section2Body1:
+        "Börja med att identifiera vad du söker stöd för, till exempel studier, idrott, kultur eller ett projekt. Då blir det lättare att välja relevanta stipendier.",
+      section2Body2:
+        "Det är också klokt att titta på stipendier med geografisk anknytning eller särskilda målgrupper, eftersom dessa ibland har lägre konkurrens.",
+      section3Title: "Så ökar du chansen att få stipendium som ung",
+      section3Body1:
+        "En tydlig ansökan som förklarar din situation, dina mål och varför stödet skulle göra skillnad kan vara avgörande. Många stipendier vill förstå både behov och potential.",
+      section3Body2:
+        "Sök gärna flera stipendier samtidigt och kombinera breda sökningar med mer nischade alternativ inom det område som passar dig bäst.",
+      faqBody:
+        "Vanliga frågor handlar om vilka unga som kan söka stipendier, om det finns åldersgränser och hur man hittar rätt stöd. Det varierar mellan olika stipendier och stiftelser.",
+      ctaTitle: "Hitta stipendier för unga hos Fundbridge",
+      ctaBody:
+        "Fundbridge hjälper dig att snabbare hitta stipendier för unga genom att samla relevanta möjligheter och visa hur många som matchar din sökning.",
     },
   };
 

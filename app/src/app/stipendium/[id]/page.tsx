@@ -72,9 +72,7 @@ function normalizeDisplayValue(value: string | null | undefined) {
     "allmän/okänd",
   ];
 
-  if (invalidValues.includes(normalized)) {
-    return "";
-  }
+  if (invalidValues.includes(normalized)) return "";
 
   return cleaned;
 }
@@ -103,17 +101,9 @@ function formatAmountRange(
   const formattedMax = formatAmount(max);
   const currencyLabel = cleanText(currency) || "SEK";
 
-  if (formattedMin && formattedMax) {
-    return `${formattedMin} – ${formattedMax} ${currencyLabel}`;
-  }
-
-  if (formattedMin) {
-    return `Från ${formattedMin} ${currencyLabel}`;
-  }
-
-  if (formattedMax) {
-    return `Upp till ${formattedMax} ${currencyLabel}`;
-  }
+  if (formattedMin && formattedMax) return `${formattedMin} – ${formattedMax} ${currencyLabel}`;
+  if (formattedMin) return `Från ${formattedMin} ${currencyLabel}`;
+  if (formattedMax) return `Upp till ${formattedMax} ${currencyLabel}`;
 
   return null;
 }
@@ -151,9 +141,7 @@ async function getScholarship(id: string) {
     .eq("id", id)
     .single();
 
-  if (error || !data) {
-    return null;
-  }
+  if (error || !data) return null;
 
   return data as Scholarship;
 }
@@ -169,27 +157,9 @@ function FactItem({
   if (typeof value === "string" && !value.trim()) return null;
 
   return (
-    <div style={{ marginBottom: 22 }}>
-      <div
-        style={{
-          fontSize: 13,
-          fontWeight: 600,
-          color: "#6b7280",
-          letterSpacing: "0.01em",
-          marginBottom: 6,
-        }}
-      >
-        {label}
-      </div>
-      <div
-        style={{
-          fontSize: 17,
-          lineHeight: 1.5,
-          color: "#111827",
-        }}
-      >
-        {value}
-      </div>
+    <div className="factItem">
+      <div className="factLabel">{label}</div>
+      <div className="factValue">{value}</div>
     </div>
   );
 }
@@ -204,31 +174,12 @@ function Section({
   if (paragraphs.length === 0) return null;
 
   return (
-    <section style={{ marginTop: 40 }}>
-      <h2
-        style={{
-          fontSize: 28,
-          lineHeight: 1.15,
-          margin: "0 0 18px 0",
-          fontWeight: 700,
-          letterSpacing: "-0.02em",
-          color: "#111827",
-        }}
-      >
-        {title}
-      </h2>
+    <section className="contentSection">
+      <h2>{title}</h2>
 
-      <div
-        style={{
-          fontSize: 19,
-          lineHeight: 1.8,
-          color: "#1f2937",
-        }}
-      >
+      <div className="paragraphs">
         {paragraphs.map((paragraph, index) => (
-          <p key={index} style={{ margin: index === 0 ? 0 : "18px 0 0 0" }}>
-            {paragraph}
-          </p>
+          <p key={index}>{paragraph}</p>
         ))}
       </div>
     </section>
@@ -246,10 +197,7 @@ export default async function ScholarshipPage({
 
   if (!access.hasAccess) {
     const fromQuery = cleanText(searchParams?.from);
-    const redirectQuery = fromQuery
-      ? `/?q=${encodeURIComponent(fromQuery)}`
-      : "/";
-
+    const redirectQuery = fromQuery ? `/?q=${encodeURIComponent(fromQuery)}` : "/";
     redirect(redirectQuery);
   }
 
@@ -293,258 +241,388 @@ export default async function ScholarshipPage({
   );
 
   return (
-    <main
-      style={{
-        maxWidth: 1180,
-        margin: "0 auto",
-        padding: "32px 24px 80px",
-        fontFamily:
-          'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-        color: "#111827",
-        background: "#ffffff",
-      }}
-    >
-      <div style={{ marginBottom: 28 }}>
-        <Link
-          href={backHref}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            textDecoration: "none",
-            color: "#4b5563",
-            fontSize: 15,
-            fontWeight: 500,
-          }}
-        >
+    <main className="page">
+      <style>{`
+        .page {
+          min-height: 100vh;
+          background: #f6f6f4;
+          color: #111827;
+          font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .wrap {
+          max-width: 1180px;
+          margin: 0 auto;
+          padding: 28px 20px 80px;
+        }
+
+        .back {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          text-decoration: none;
+          color: #2f6f73;
+          font-size: 15px;
+          font-weight: 700;
+          margin-bottom: 22px;
+        }
+
+        .card {
+          background: #ffffff;
+          border: 1px solid #e7e7e2;
+          border-radius: 24px;
+          padding: 34px;
+        }
+
+        .header {
+          max-width: 880px;
+          margin-bottom: 34px;
+        }
+
+        .eyebrow {
+          font-size: 15px;
+          color: #6b7280;
+          line-height: 1.5;
+          margin-top: 14px;
+          word-break: break-word;
+        }
+
+        h1 {
+          margin: 0;
+          font-size: clamp(32px, 5vw, 56px);
+          line-height: 1.06;
+          letter-spacing: -0.045em;
+          font-weight: 800;
+          color: #111827;
+          overflow-wrap: anywhere;
+        }
+
+        .summary {
+          margin: 22px 0 0;
+          font-size: clamp(19px, 3vw, 28px);
+          line-height: 1.45;
+          letter-spacing: -0.025em;
+          color: #111827;
+          overflow-wrap: anywhere;
+        }
+
+        .tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          margin-top: 24px;
+        }
+
+        .tag {
+          text-decoration: none;
+          padding: 9px 13px;
+          border-radius: 999px;
+          background: #f3f4f6;
+          color: #111827;
+          font-size: 14px;
+          font-weight: 600;
+          max-width: 100%;
+          overflow-wrap: anywhere;
+        }
+
+        .layout {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) 340px;
+          gap: 34px;
+          align-items: start;
+        }
+
+        .content {
+          min-width: 0;
+        }
+
+        .contentSection {
+          margin-top: 38px;
+        }
+
+        .contentSection:first-child {
+          margin-top: 0;
+        }
+
+        .contentSection h2,
+        .applyBox h2,
+        .facts h2 {
+          margin: 0 0 14px;
+          font-size: clamp(23px, 3vw, 30px);
+          line-height: 1.18;
+          letter-spacing: -0.03em;
+          font-weight: 800;
+          color: #111827;
+        }
+
+        .paragraphs {
+          font-size: 18px;
+          line-height: 1.8;
+          color: #1f2937;
+          overflow-wrap: anywhere;
+        }
+
+        .paragraphs p {
+          margin: 0 0 16px;
+        }
+
+        .paragraphs p:last-child {
+          margin-bottom: 0;
+        }
+
+        .applyBox {
+          margin-top: 42px;
+          border: 1px solid #e5e7eb;
+          border-radius: 22px;
+          padding: 26px;
+          background: #fafafa;
+        }
+
+        .factsWrap {
+          min-width: 0;
+        }
+
+        .facts {
+          position: sticky;
+          top: 20px;
+          border: 1px solid #e5e7eb;
+          border-radius: 22px;
+          padding: 24px;
+          background: #fafafa;
+          max-width: 100%;
+        }
+
+        .factItem {
+          padding: 16px 0;
+          border-top: 1px solid #e5e7eb;
+          min-width: 0;
+        }
+
+        .factItem:first-of-type {
+          border-top: 0;
+          padding-top: 0;
+        }
+
+        .factItem:last-child {
+          padding-bottom: 0;
+        }
+
+        .factLabel {
+          font-size: 13px;
+          font-weight: 700;
+          color: #6b7280;
+          letter-spacing: 0.01em;
+          margin-bottom: 6px;
+        }
+
+        .factValue {
+          font-size: 16px;
+          line-height: 1.55;
+          color: #111827;
+          overflow-wrap: anywhere;
+          word-break: break-word;
+        }
+
+        .ctaRow {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 12px;
+          margin-top: 26px;
+        }
+
+        .buttonPrimary,
+        .buttonSecondary {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          text-decoration: none;
+          border-radius: 14px;
+          padding: 12px 16px;
+          font-size: 15px;
+          font-weight: 800;
+          line-height: 1.3;
+        }
+
+        .buttonPrimary {
+          background: #2f6f73;
+          color: white;
+          box-shadow: 0 6px 18px rgba(47,111,115,0.16);
+        }
+
+        .buttonSecondary {
+          background: #f3f4f6;
+          color: #111827;
+          border: 1px solid #e5e7eb;
+        }
+
+        @media (max-width: 860px) {
+          .wrap {
+            padding: 18px 14px 56px;
+          }
+
+          .card {
+            border-radius: 18px;
+            padding: 22px 16px;
+          }
+
+          .layout {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+          }
+
+          .factsWrap {
+            width: 100%;
+            order: -1;
+          }
+
+          .facts {
+            position: static;
+            padding: 18px;
+            border-radius: 18px;
+          }
+
+          .content {
+            width: 100%;
+          }
+
+          .paragraphs {
+            font-size: 16px;
+            line-height: 1.75;
+          }
+
+          .applyBox {
+            padding: 20px 16px;
+            border-radius: 18px;
+          }
+
+          .buttonPrimary,
+          .buttonSecondary {
+            width: 100%;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .wrap {
+            padding-left: 10px;
+            padding-right: 10px;
+          }
+
+          .card {
+            padding: 18px 14px;
+          }
+
+          .summary {
+            font-size: 18px;
+            line-height: 1.55;
+          }
+
+          .contentSection {
+            margin-top: 30px;
+          }
+
+          .tags {
+            gap: 8px;
+          }
+
+          .tag {
+            font-size: 13px;
+            padding: 8px 11px;
+          }
+        }
+      `}</style>
+
+      <div className="wrap">
+        <Link href={backHref} className="back">
           ← Tillbaka till resultat
         </Link>
-      </div>
 
-      <header style={{ marginBottom: 36, maxWidth: 820 }}>
-        <h1
-          style={{
-            margin: 0,
-            fontSize: 56,
-            lineHeight: 1.02,
-            letterSpacing: "-0.04em",
-            fontWeight: 750,
-            color: "#111827",
-          }}
-        >
-          {scholarship.name || "Stipendium"}
-        </h1>
+        <article className="card">
+          <header className="header">
+            <h1>{scholarship.name || "Stipendium"}</h1>
 
-        {normalizeDisplayValue(scholarship.provider) && (
-          <div
-            style={{
-              marginTop: 14,
-              fontSize: 17,
-              color: "#6b7280",
-              lineHeight: 1.5,
-            }}
-          >
-            {normalizeDisplayValue(scholarship.provider)}
-          </div>
-        )}
+            {normalizeDisplayValue(scholarship.provider) && (
+              <div className="eyebrow">{normalizeDisplayValue(scholarship.provider)}</div>
+            )}
 
-        {summary && (
-          <p
-            style={{
-              marginTop: 24,
-              marginBottom: 0,
-              fontSize: 30,
-              lineHeight: 1.35,
-              letterSpacing: "-0.02em",
-              color: "#111827",
-              maxWidth: 920,
-            }}
-          >
-            {summary}
-          </p>
-        )}
+            {summary && <p className="summary">{summary}</p>}
 
-        {tags.length > 0 && (
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: 10,
-              marginTop: 28,
-            }}
-          >
-            {tags.map((tag) => (
-              <Link
-                key={tag}
-                href={`/?q=${encodeURIComponent(tag)}`}
-                style={{
-                  textDecoration: "none",
-                  padding: "9px 14px",
-                  borderRadius: 999,
-                  background: "#f3f4f6",
-                  color: "#111827",
-                  fontSize: 14,
-                  fontWeight: 500,
-                }}
-              >
-                {tag}
-              </Link>
-            ))}
-          </div>
-        )}
-      </header>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "minmax(0, 1fr) 320px",
-          gap: 40,
-          alignItems: "start",
-        }}
-      >
-        <div>
-          <Section title="Beskrivning" paragraphs={descriptionParagraphs} />
-          <Section title="Vem kan söka?" paragraphs={whoCanApplyParagraphs} />
-          <Section title="Krav" paragraphs={requirementsParagraphs} />
-          <Section title="Urvalskriterier" paragraphs={selectionParagraphs} />
-          <Section
-            title="Dokument som kan krävas"
-            paragraphs={documentsParagraphs}
-          />
-
-          <section
-            style={{
-              marginTop: 44,
-              border: "1px solid #e5e7eb",
-              borderRadius: 24,
-              padding: "28px 28px 26px",
-              background: "#fafafa",
-            }}
-          >
-            <h2
-              style={{
-                margin: "0 0 14px 0",
-                fontSize: 28,
-                lineHeight: 1.15,
-                letterSpacing: "-0.02em",
-                fontWeight: 700,
-                color: "#111827",
-              }}
-            >
-              Hur ansöker man?
-            </h2>
-
-            {applicationParagraphs.length > 0 ? (
-              <div
-                style={{
-                  fontSize: 18,
-                  lineHeight: 1.8,
-                  color: "#1f2937",
-                }}
-              >
-                {applicationParagraphs.map((paragraph, index) => (
-                  <p key={index} style={{ margin: index === 0 ? 0 : "16px 0 0 0" }}>
-                    {paragraph}
-                  </p>
+            {tags.length > 0 && (
+              <div className="tags">
+                {tags.map((tag) => (
+                  <Link
+                    key={tag}
+                    href={`/?q=${encodeURIComponent(tag)}`}
+                    className="tag"
+                  >
+                    {tag}
+                  </Link>
                 ))}
               </div>
-            ) : (
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: 18,
-                  lineHeight: 1.8,
-                  color: "#1f2937",
-                }}
-              >
-                Fundbridge hjälper dig att hitta relevanta stipendier och förstå
-                kriterierna. Själva ansökan sker vanligtvis via stiftelsen,
-                universitetet eller organisationen som delar ut stipendiet.
-              </p>
             )}
-          </section>
-        </div>
+          </header>
 
-        <aside
-          style={{
-            position: "sticky",
-            top: 24,
-          }}
-        >
-          <div
-            style={{
-              border: "1px solid #e5e7eb",
-              borderRadius: 24,
-              padding: 24,
-              background: "#fafafa",
-            }}
-          >
-            <h2
-              style={{
-                margin: "0 0 22px 0",
-                fontSize: 24,
-                lineHeight: 1.15,
-                letterSpacing: "-0.02em",
-                fontWeight: 700,
-                color: "#111827",
-              }}
-            >
-              Fakta
-            </h2>
+          <div className="layout">
+            <div className="content">
+              <Section title="Beskrivning" paragraphs={descriptionParagraphs} />
+              <Section title="Vem kan söka?" paragraphs={whoCanApplyParagraphs} />
+              <Section title="Krav" paragraphs={requirementsParagraphs} />
+              <Section title="Urvalskriterier" paragraphs={selectionParagraphs} />
+              <Section title="Dokument som kan krävas" paragraphs={documentsParagraphs} />
 
-            <FactItem label="Målgrupp" value={normalizeDisplayValue(scholarship.target_group)} />
-            <FactItem
-              label="Studieområde"
-              value={normalizeDisplayValue(scholarship.field_of_studies)}
-            />
-            <FactItem
-              label="Studienivå"
-              value={normalizeDisplayValue(scholarship.study_level)}
-            />
-            <FactItem
-              label="Typ av studier"
-              value={normalizeDisplayValue(scholarship.type_of_studies)}
-            />
-            <FactItem label="Geografi" value={normalizeDisplayValue(scholarship.geography)} />
-            <FactItem label="Belopp" value={amountText} />
-            <FactItem
-              label="Antal stipendier"
-              value={scholarship.number_of_awards ?? null}
-            />
-            <FactItem
-              label="Land för studier"
-              value={normalizeDisplayValue(scholarship.country_of_study)}
-            />
-            <FactItem
-              label="Könskrav"
-              value={normalizeDisplayValue(scholarship.gender_requirement)}
-            />
-            <FactItem
-              label="Åldersgrupp"
-              value={normalizeDisplayValue(scholarship.age_group)}
-            />
-            <FactItem
-              label="Nationalitet"
-              value={normalizeDisplayValue(scholarship.nationality_required)}
-            />
-            <FactItem
-              label="Bosättningskrav"
-              value={normalizeDisplayValue(scholarship.residence_required)}
-            />
-            <FactItem
-              label="Universitetskrav"
-              value={normalizeDisplayValue(scholarship.university_required)}
-            />
-            <FactItem
-              label="Telefon"
-              value={normalizeDisplayValue(scholarship.contact_phone)}
-            />
-            <FactItem
-              label="E-post"
-              value={normalizeDisplayValue(scholarship.contact_email)}
-            />
+              <section className="applyBox">
+                <h2>Hur ansöker man?</h2>
+
+                {applicationParagraphs.length > 0 ? (
+                  <div className="paragraphs">
+                    {applicationParagraphs.map((paragraph, index) => (
+                      <p key={index}>{paragraph}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="paragraphs">
+                    <p>
+                      Fundbridge hjälper dig att hitta relevanta stipendier och förstå
+                      kriterierna. Själva ansökan sker vanligtvis via stiftelsen,
+                      universitetet eller organisationen som delar ut stipendiet.
+                    </p>
+                  </div>
+                )}
+
+                <div className="ctaRow">
+                  <Link href={backHref} className="buttonPrimary">
+                    Tillbaka till resultat
+                  </Link>
+                  <Link href="/" className="buttonSecondary">
+                    Gör ny sökning
+                  </Link>
+                </div>
+              </section>
+            </div>
+
+            <aside className="factsWrap">
+              <div className="facts">
+                <h2>Fakta</h2>
+
+                <FactItem label="Målgrupp" value={normalizeDisplayValue(scholarship.target_group)} />
+                <FactItem label="Studieområde" value={normalizeDisplayValue(scholarship.field_of_studies)} />
+                <FactItem label="Studienivå" value={normalizeDisplayValue(scholarship.study_level)} />
+                <FactItem label="Typ av studier" value={normalizeDisplayValue(scholarship.type_of_studies)} />
+                <FactItem label="Geografi" value={normalizeDisplayValue(scholarship.geography)} />
+                <FactItem label="Belopp" value={amountText} />
+                <FactItem label="Antal stipendier" value={scholarship.number_of_awards ?? null} />
+                <FactItem label="Land för studier" value={normalizeDisplayValue(scholarship.country_of_study)} />
+                <FactItem label="Könskrav" value={normalizeDisplayValue(scholarship.gender_requirement)} />
+                <FactItem label="Åldersgrupp" value={normalizeDisplayValue(scholarship.age_group)} />
+                <FactItem label="Nationalitet" value={normalizeDisplayValue(scholarship.nationality_required)} />
+                <FactItem label="Bosättningskrav" value={normalizeDisplayValue(scholarship.residence_required)} />
+                <FactItem label="Universitetskrav" value={normalizeDisplayValue(scholarship.university_required)} />
+                <FactItem label="Telefon" value={normalizeDisplayValue(scholarship.contact_phone)} />
+                <FactItem label="E-post" value={normalizeDisplayValue(scholarship.contact_email)} />
+              </div>
+            </aside>
           </div>
-        </aside>
+        </article>
       </div>
     </main>
   );

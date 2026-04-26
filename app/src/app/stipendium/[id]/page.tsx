@@ -248,12 +248,15 @@ export default async function ScholarshipPage({
           background: #f6f6f4;
           color: #111827;
           font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          overflow-x: hidden;
         }
 
         .wrap {
+          width: 100%;
           max-width: 1180px;
           margin: 0 auto;
           padding: 28px 20px 80px;
+          box-sizing: border-box;
         }
 
         .back {
@@ -268,10 +271,13 @@ export default async function ScholarshipPage({
         }
 
         .card {
+          width: 100%;
           background: #ffffff;
           border: 1px solid #e7e7e2;
           border-radius: 24px;
           padding: 34px;
+          box-sizing: border-box;
+          overflow: hidden;
         }
 
         .header {
@@ -284,14 +290,14 @@ export default async function ScholarshipPage({
           color: #6b7280;
           line-height: 1.5;
           margin-top: 14px;
-          word-break: break-word;
+          overflow-wrap: anywhere;
         }
 
         h1 {
           margin: 0;
-          font-size: clamp(32px, 5vw, 56px);
-          line-height: 1.06;
-          letter-spacing: -0.045em;
+          font-size: clamp(30px, 5vw, 56px);
+          line-height: 1.08;
+          letter-spacing: -0.04em;
           font-weight: 800;
           color: #111827;
           overflow-wrap: anywhere;
@@ -376,6 +382,10 @@ export default async function ScholarshipPage({
           border-radius: 22px;
           padding: 26px;
           background: #fafafa;
+          box-sizing: border-box;
+          width: 100%;
+          max-width: 100%;
+          overflow: hidden;
         }
 
         .factsWrap {
@@ -390,6 +400,7 @@ export default async function ScholarshipPage({
           padding: 24px;
           background: #fafafa;
           max-width: 100%;
+          box-sizing: border-box;
         }
 
         .factItem {
@@ -441,6 +452,7 @@ export default async function ScholarshipPage({
           font-size: 15px;
           font-weight: 800;
           line-height: 1.3;
+          box-sizing: border-box;
         }
 
         .buttonPrimary {
@@ -457,32 +469,43 @@ export default async function ScholarshipPage({
 
         @media (max-width: 860px) {
           .wrap {
-            padding: 18px 14px 56px;
+            padding: 18px 12px 56px;
           }
 
           .card {
             border-radius: 18px;
             padding: 22px 16px;
+            overflow: hidden;
+          }
+
+          .header {
+            max-width: 100%;
+            margin-bottom: 30px;
           }
 
           .layout {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr;
             gap: 28px;
+          }
+
+          .content {
+            width: 100%;
+            min-width: 0;
+            order: 1;
           }
 
           .factsWrap {
             width: 100%;
-            order: -1;
+            min-width: 0;
+            order: 2;
           }
 
           .facts {
             position: static;
+            top: auto;
             padding: 18px;
             border-radius: 18px;
-          }
-
-          .content {
             width: 100%;
           }
 
@@ -494,6 +517,11 @@ export default async function ScholarshipPage({
           .applyBox {
             padding: 20px 16px;
             border-radius: 18px;
+            width: 100%;
+          }
+
+          .ctaRow {
+            flex-direction: column;
           }
 
           .buttonPrimary,
@@ -504,12 +532,23 @@ export default async function ScholarshipPage({
 
         @media (max-width: 480px) {
           .wrap {
-            padding-left: 10px;
-            padding-right: 10px;
+            padding: 16px 10px 48px;
           }
 
           .card {
             padding: 18px 14px;
+            border-radius: 16px;
+          }
+
+          .back {
+            font-size: 14px;
+            margin-bottom: 16px;
+          }
+
+          h1 {
+            font-size: 30px;
+            line-height: 1.12;
+            letter-spacing: -0.035em;
           }
 
           .summary {
@@ -521,6 +560,12 @@ export default async function ScholarshipPage({
             margin-top: 30px;
           }
 
+          .contentSection h2,
+          .applyBox h2,
+          .facts h2 {
+            font-size: 23px;
+          }
+
           .tags {
             gap: 8px;
           }
@@ -528,6 +573,10 @@ export default async function ScholarshipPage({
           .tag {
             font-size: 13px;
             padding: 8px 11px;
+          }
+
+          .facts {
+            padding: 16px;
           }
         }
       `}</style>
@@ -542,7 +591,9 @@ export default async function ScholarshipPage({
             <h1>{scholarship.name || "Stipendium"}</h1>
 
             {normalizeDisplayValue(scholarship.provider) && (
-              <div className="eyebrow">{normalizeDisplayValue(scholarship.provider)}</div>
+              <div className="eyebrow">
+                {normalizeDisplayValue(scholarship.provider)}
+              </div>
             )}
 
             {summary && <p className="summary">{summary}</p>}

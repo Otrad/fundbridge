@@ -11,12 +11,8 @@ export const metadata: Metadata = {
     google: "WpYlViWtZogXAzFlNn6WJtqbthlucIvIedr7pjVnmE0",
   },
   icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/icon.png", type: "image/png" },
-    ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
-    shortcut: ["/favicon.ico"],
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
   openGraph: {
     title: "Hitta stipendier i Sverige | Fundbridge",
@@ -37,9 +33,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="sv">
       <body

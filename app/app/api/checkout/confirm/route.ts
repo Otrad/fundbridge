@@ -41,17 +41,36 @@ function createSignedAccessCookie(expiresAt: number) {
 export async function GET(req: NextRequest) {
   try {
     const sessionId = req.nextUrl.searchParams.get("session_id");
+    const paymentIntentId = req.nextUrl.searchParams.get("payment_intent");
 
-    if (!sessionId) {
+    if (!sessionId && !paymentIntentId) {
       return NextResponse.json(
-        { error: "Missing session_id" },
+        { error: "Missing session_id or payment_intent" },
         { status: 400 }
       );
     }
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    let searchQuery = "";
+    let paid = false;
 
-    if (session.payment_status !== "paid") {
+    if (sessionId) {
+      const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+      if (session.payment_status === "paid") {
+        paid = true;
+        searchQuery = session.metadata?.search_query ?? "";
+      }
+    }
+
+    if (!paid && paymentIntentId) {
+      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+      if (paymentIntent.status === "succeeded") {
+        paid = true;
+      }
+    }
+
+    if (!paid) {
       return NextResponse.json(
         { error: "Payment not completed" },
         { status: 400 }
@@ -60,7 +79,6 @@ export async function GET(req: NextRequest) {
 
     const expiresAt = Date.now() + THIRTY_DAYS_MS;
     const cookieValue = createSignedAccessCookie(expiresAt);
-    const searchQuery = session.metadata?.search_query ?? "";
 
     cookies().set({
       name: ACCESS_COOKIE_NAME,
@@ -78,6 +96,7 @@ export async function GET(req: NextRequest) {
       ok: true,
       query: searchQuery,
       expiresAt,
+      restoredBy: sessionId ? "session_id" : "payment_intent",
     });
   } catch (error) {
     console.error("Stripe confirm error:", error);

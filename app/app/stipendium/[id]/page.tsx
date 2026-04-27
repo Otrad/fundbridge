@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
-import { getAccessState } from "@/lib/access";
+import { getAccessState } from "../../lib/access";
 
 type Scholarship = {
   id: string;
@@ -678,3 +678,4 @@ export default async function ScholarshipPage({
     </main>
   );
 }
+

@@ -30,3 +30,4 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/sok/lund`, lastModified: now },
   ];
 }
+

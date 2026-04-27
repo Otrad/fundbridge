@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "../../lib/supabase";
 
 function normalizeSearchQuery(input: string) {
   const synonymMap: Record<string, string> = {
@@ -178,4 +178,5 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
 

@@ -232,3 +232,4 @@ export default function Stipendium2026Page() {
     </main>
   );
 }
+

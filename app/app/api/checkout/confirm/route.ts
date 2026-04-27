@@ -19,7 +19,8 @@ if (!accessCookieSecret) {
 const stripe = new Stripe(stripeSecretKey);
 
 const ACCESS_COOKIE_NAME = "fundbridge_access";
-const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+const THIRTY_DAYS_SECONDS = 60 * 60 * 24 * 30;
+const THIRTY_DAYS_MS = THIRTY_DAYS_SECONDS * 1000;
 
 function createSignedAccessCookie(expiresAt: number) {
   const payload = Buffer.from(
@@ -68,6 +69,8 @@ export async function GET(req: NextRequest) {
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
       path: "/",
+      domain: ".fundbridge.se",
+      maxAge: THIRTY_DAYS_SECONDS,
       expires: new Date(expiresAt),
     });
 
@@ -85,5 +88,3 @@ export async function GET(req: NextRequest) {
     );
   }
 }
-
-

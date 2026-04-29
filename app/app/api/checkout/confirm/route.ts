@@ -37,7 +37,9 @@ export async function GET(req: NextRequest) {
     const sessionId = req.nextUrl.searchParams.get("session_id");
 
     if (!sessionId) {
-      return NextResponse.redirect(new URL("/?payment=missing_session", req.url));
+      return NextResponse.redirect(
+        new URL("/?payment=missing_session", req.url)
+      );
     }
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
@@ -50,7 +52,7 @@ export async function GET(req: NextRequest) {
     const expiresAt = Date.now() + THIRTY_DAYS_MS;
     const cookieValue = createSignedAccessCookie(expiresAt);
 
-    const redirectUrl = new URL("/sok", req.url);
+    const redirectUrl = new URL("/", req.url);
 
     if (searchQuery) {
       redirectUrl.searchParams.set("q", searchQuery);
@@ -74,6 +76,9 @@ export async function GET(req: NextRequest) {
     return res;
   } catch (error) {
     console.error("Stripe confirm error:", error);
-    return NextResponse.redirect(new URL("/?payment=confirm_error", req.url));
+
+    return NextResponse.redirect(
+      new URL("/?payment=confirm_error", req.url)
+    );
   }
 }

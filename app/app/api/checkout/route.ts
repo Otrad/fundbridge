@@ -1,53 +1,79 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+import crypto from "crypto";
 
 export const dynamic = "force-dynamic";
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-const appUrl = process.env.NEXT_PUBLIC_APP_URL;
-const priceId = process.env.STRIPE_PRICE_ID;
+const accessCookieSecret = process.env.ACCESS_COOKIE_SECRET;
 
 if (!stripeSecretKey) throw new Error("Missing STRIPE_SECRET_KEY");
-if (!appUrl) throw new Error("Missing NEXT_PUBLIC_APP_URL");
-if (!priceId) throw new Error("Missing STRIPE_PRICE_ID");
+if (!accessCookieSecret) throw new Error("Missing ACCESS_COOKIE_SECRET");
 
 const stripe = new Stripe(stripeSecretKey);
 
-export async function POST(req: Request) {
+const ACCESS_COOKIE_NAME = "fundbridge_access";
+const THIRTY_DAYS_SECONDS = 60 * 60 * 24 * 30;
+const THIRTY_DAYS_MS = THIRTY_DAYS_SECONDS * 1000;
+
+function createSignedAccessCookie(expiresAt: number) {
+  const payload = Buffer.from(
+    JSON.stringify({
+      paid: true,
+      expiresAt,
+    })
+  ).toString("base64url");
+
+  const signature = crypto
+    .createHmac("sha256", accessCookieSecret!)
+    .update(payload)
+    .digest("base64url");
+
+  return `${payload}.${signature}`;
+}
+
+export async function GET(req: NextRequest) {
   try {
-    const body = await req.json().catch(() => ({}));
+    const sessionId = req.nextUrl.searchParams.get("session_id");
 
-    const searchQuery = typeof body?.query === "string" ? body.query : "";
-
-    const session = await stripe.checkout.sessions.create({
-      mode: "payment",
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      success_url: `${appUrl}/api/checkout/confirm?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}/?payment=cancelled`,
-      metadata: {
-        search_query: searchQuery,
-      },
-    });
-
-    if (!session.url) {
-      return NextResponse.json(
-        { error: "Stripe did not return checkout URL" },
-        { status: 500 }
-      );
+    if (!sessionId) {
+      return NextResponse.redirect(new URL("/?payment=missing_session", req.url));
     }
 
-    return NextResponse.json({ url: session.url });
-  } catch (error) {
-    console.error("Stripe checkout error:", error);
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    return NextResponse.json(
-      { error: "Stripe checkout failed" },
-      { status: 500 }
-    );
+    if (session.payment_status !== "paid") {
+      return NextResponse.redirect(new URL("/?payment=not_paid", req.url));
+    }
+
+    const searchQuery = session.metadata?.search_query ?? "";
+    const expiresAt = Date.now() + THIRTY_DAYS_MS;
+    const cookieValue = createSignedAccessCookie(expiresAt);
+
+    const redirectUrl = new URL("/", req.url);
+
+    if (searchQuery) {
+      redirectUrl.searchParams.set("q", searchQuery);
+    }
+
+    redirectUrl.searchParams.set("access", "unlocked");
+
+    const res = NextResponse.redirect(redirectUrl);
+
+    res.cookies.set({
+      name: ACCESS_COOKIE_NAME,
+      value: cookieValue,
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: THIRTY_DAYS_SECONDS,
+      expires: new Date(expiresAt),
+    });
+
+    return res;
+  } catch (error) {
+    console.error("Stripe confirm error:", error);
+    return NextResponse.redirect(new URL("/?payment=confirm_error", req.url));
   }
 }

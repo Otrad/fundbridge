@@ -40,11 +40,6 @@ async function isPaidPayment(paymentId: string) {
     return paymentIntent.status === "succeeded";
   }
 
-  if (paymentId.startsWith("py_")) {
-    const payment = await stripe.paymentIntents.retrieve(paymentId);
-    return payment.status === "succeeded";
-  }
-
   if (paymentId.startsWith("cs_")) {
     const session = await stripe.checkout.sessions.retrieve(paymentId);
     return session.payment_status === "paid";
@@ -65,10 +60,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (!payment) {
-      return NextResponse.json(
-        { error: "Missing payment" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing payment" }, { status: 400 });
     }
 
     const paid = await isPaidPayment(payment);
@@ -83,9 +75,7 @@ export async function GET(req: NextRequest) {
     const expiresAt = Date.now() + THIRTY_DAYS_MS;
     const cookieValue = createSignedAccessCookie(expiresAt);
 
-    const res = NextResponse.redirect(
-      new URL("/sok?access=restored", req.url)
-    );
+    const res = NextResponse.redirect(new URL("/?access=restored", req.url));
 
     res.cookies.set({
       name: ACCESS_COOKIE_NAME,

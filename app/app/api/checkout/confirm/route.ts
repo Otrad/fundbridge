@@ -38,21 +38,23 @@ export async function GET(req: NextRequest) {
 
     if (!sessionId) {
       return NextResponse.redirect(
-        new URL("/?payment=missing_session", req.url)
+        "https://fundbridge.se/?payment=missing_session"
       );
     }
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (session.payment_status !== "paid") {
-      return NextResponse.redirect(new URL("/?payment=not_paid", req.url));
+      return NextResponse.redirect(
+        "https://fundbridge.se/?payment=not_paid"
+      );
     }
 
     const searchQuery = session.metadata?.search_query ?? "";
     const expiresAt = Date.now() + THIRTY_DAYS_MS;
     const cookieValue = createSignedAccessCookie(expiresAt);
 
-    const redirectUrl = new URL("/", req.url);
+    const redirectUrl = new URL("https://fundbridge.se/");
 
     if (searchQuery) {
       redirectUrl.searchParams.set("q", searchQuery);
@@ -67,8 +69,9 @@ export async function GET(req: NextRequest) {
       value: cookieValue,
       httpOnly: true,
       sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       path: "/",
+      domain: ".fundbridge.se",
       maxAge: THIRTY_DAYS_SECONDS,
       expires: new Date(expiresAt),
     });
@@ -78,7 +81,7 @@ export async function GET(req: NextRequest) {
     console.error("Stripe confirm error:", error);
 
     return NextResponse.redirect(
-      new URL("/?payment=confirm_error", req.url)
+      "https://fundbridge.se/?payment=confirm_error"
     );
   }
 }

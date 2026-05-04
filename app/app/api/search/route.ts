@@ -121,6 +121,8 @@ export async function GET(req: NextRequest) {
   try {
     const q = (req.nextUrl.searchParams.get("q") || "").trim();
 
+    console.log("SEARCH QUERY:", q);
+
     if (!q) {
       return NextResponse.json({
         total: 0,
@@ -130,15 +132,17 @@ export async function GET(req: NextRequest) {
 
     const normalizedQuery = normalizeSearchQuery(q);
 
-    const [{ data: resultsData, error: resultsError }, { data: countData, error: countError }] =
-      await Promise.all([
-        supabase.rpc("search_scholarships", {
-          search_query: normalizedQuery,
-        }),
-        supabase.rpc("count_search_scholarships", {
-          search_query: normalizedQuery,
-        }),
-      ]);
+    const [
+      { data: resultsData, error: resultsError },
+      { data: countData, error: countError },
+    ] = await Promise.all([
+      supabase.rpc("search_scholarships", {
+        search_query: normalizedQuery,
+      }),
+      supabase.rpc("count_search_scholarships", {
+        search_query: normalizedQuery,
+      }),
+    ]);
 
     if (resultsError) {
       console.error("search_scholarships RPC error:", resultsError);
@@ -172,6 +176,7 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     console.error("API /api/search unexpected error:", error);
+
     return NextResponse.json(
       { error: "Unexpected server error" },
       { status: 500 }

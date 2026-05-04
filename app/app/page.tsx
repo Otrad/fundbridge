@@ -56,10 +56,7 @@ function HomePageContent() {
 
   async function refreshAccess() {
     try {
-      const res = await fetch("/api/access", {
-        cache: "no-store",
-      });
-
+      const res = await fetch("/api/access", { cache: "no-store" });
       const data = await res.json();
       setUnlocked(Boolean(data?.hasAccess));
     } catch (error) {
@@ -93,36 +90,25 @@ function HomePageContent() {
         cache: "no-store",
       });
 
-      if (!res.ok) {
-        throw new Error("Search request failed");
-      }
+      if (!res.ok) throw new Error("Search request failed");
 
       const data = await res.json();
 
-      if (searchId !== activeSearchIdRef.current) {
-        return;
-      }
+      if (searchId !== activeSearchIdRef.current) return;
 
-      const nextResults = Array.isArray(data?.results) ? data.results : [];
-      const nextTotal = typeof data?.total === "number" ? data.total : 0;
-
-      setRows(nextResults);
-      setTotal(nextTotal);
+      setRows(Array.isArray(data?.results) ? data.results : []);
+      setTotal(typeof data?.total === "number" ? data.total : 0);
       setErr("");
       lastExecutedQueryRef.current = query;
     } catch (error) {
-      if (searchId !== activeSearchIdRef.current) {
-        return;
-      }
+      if (searchId !== activeSearchIdRef.current) return;
 
       console.error("Frontend search error:", error);
       setErr("Kunde inte hämta sökresultat just nu.");
       setRows([]);
       setTotal(0);
     } finally {
-      if (searchId === activeSearchIdRef.current) {
-        setLoading(false);
-      }
+      if (searchId === activeSearchIdRef.current) setLoading(false);
     }
   }
 
@@ -140,9 +126,7 @@ function HomePageContent() {
         cache: "no-store",
       });
 
-      if (!res.ok) {
-        throw new Error("Suggestion request failed");
-      }
+      if (!res.ok) throw new Error("Suggestion request failed");
 
       const data = await res.json();
       const nextSuggestions = Array.isArray(data) ? data : [];
@@ -222,9 +206,7 @@ function HomePageContent() {
   }, []);
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
+    const handleResize = () => setIsMobile(window.innerWidth < 640);
 
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -353,13 +335,7 @@ function HomePageContent() {
               Meny
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 8,
-              }}
-            >
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               <Link
                 href="/om-fundbridge"
                 onClick={() => setMenuOpen(false)}
@@ -446,13 +422,7 @@ function HomePageContent() {
               boxShadow: "0 2px 10px rgba(17,24,39,0.04)",
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 4,
-              }}
-            >
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
               <span
                 style={{
                   width: 18,
@@ -484,13 +454,7 @@ function HomePageContent() {
           </button>
         </header>
 
-        <section
-          style={{
-            textAlign: "center",
-            maxWidth: 790,
-            margin: "0 auto",
-          }}
-        >
+        <section style={{ textAlign: "center", maxWidth: 790, margin: "0 auto" }}>
           <h1
             style={{
               margin: 0,
@@ -501,7 +465,7 @@ function HomePageContent() {
               color: "#111827",
             }}
           >
-            Hitta stipendier i Sverige
+            Hitta stipendier du faktiskt kan få
           </h1>
 
           <p
@@ -513,18 +477,12 @@ function HomePageContent() {
               color: "#374151",
             }}
           >
-            Sök bland stipendier i Sverige för studenter, privatpersoner och
-            organisationer. Fundbridge samlar aktuella stipendier och
-            finansieringsmöjligheter på ett ställe så att du snabbare kan hitta
-            rätt stipendium för din situation.
+            Sök bland hundratals stipendier i Sverige – allt samlat på ett
+            ställe så att du snabbare kan hitta stipendier som passar din
+            situation.
           </p>
 
-          <form
-            onSubmit={handleSubmit}
-            style={{
-              marginTop: isMobile ? 20 : 24,
-            }}
-          >
+          <form onSubmit={handleSubmit} style={{ marginTop: isMobile ? 20 : 24 }}>
             <div
               style={{
                 position: "relative",
@@ -541,9 +499,7 @@ function HomePageContent() {
                   fetchSuggestions(value);
                 }}
                 onFocus={() => {
-                  if (suggestions.length > 0) {
-                    setShowSuggestions(true);
-                  }
+                  if (suggestions.length > 0) setShowSuggestions(true);
                 }}
                 placeholder={placeholder}
                 style={{
@@ -582,7 +538,7 @@ function HomePageContent() {
                   boxShadow: "0 6px 18px rgba(47,111,115,0.16)",
                 }}
               >
-                {loading ? "Söker…" : "Sök stipendier"}
+                {loading ? "Söker…" : "Se stipendier direkt"}
               </button>
 
               {showSuggestions && suggestions.length > 0 && (
@@ -605,9 +561,7 @@ function HomePageContent() {
                     <button
                       key={suggestion}
                       type="button"
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                      }}
+                      onMouseDown={(e) => e.preventDefault()}
                       onClick={() => {
                         setQ(suggestion);
                         setShowSuggestions(false);
@@ -657,19 +611,12 @@ function HomePageContent() {
               marginRight: "auto",
             }}
           >
-            Se hur många stipendier som matchar din sökning och få full tillgång
-            till alla resultat för 39 kr i 30 dagar.
+            Se direkt hur många stipendier som matchar din sökning.
           </p>
         </section>
 
         {err && (
-          <p
-            style={{
-              color: "crimson",
-              marginTop: 22,
-              textAlign: "center",
-            }}
-          >
+          <p style={{ color: "crimson", marginTop: 22, textAlign: "center" }}>
             {err}
           </p>
         )}
@@ -694,13 +641,7 @@ function HomePageContent() {
               ⚠️ Betalningen avbröts
             </div>
 
-            <div
-              style={{
-                marginTop: 6,
-                fontSize: 14,
-                lineHeight: 1.5,
-              }}
-            >
+            <div style={{ marginTop: 6, fontSize: 14, lineHeight: 1.5 }}>
               Ingen debitering har skett. Du kan fortsätta söka och låsa upp när
               du vill.
             </div>
@@ -779,13 +720,7 @@ function HomePageContent() {
               Lås upp alla stipendier
             </div>
 
-            <div
-              style={{
-                fontSize: 15,
-                color: "#4b5563",
-                lineHeight: 1.6,
-              }}
-            >
+            <div style={{ fontSize: 15, color: "#4b5563", lineHeight: 1.6 }}>
               Du har hittat {formatTotal(total)} stipendier som matchar din
               sökning.
             </div>
@@ -802,23 +737,11 @@ function HomePageContent() {
               ansökningsinformation direkt.
             </div>
 
-            <div
-              style={{
-                marginTop: 18,
-                fontSize: 20,
-                fontWeight: 800,
-              }}
-            >
+            <div style={{ marginTop: 18, fontSize: 20, fontWeight: 800 }}>
               39 kr
             </div>
 
-            <div
-              style={{
-                marginTop: 4,
-                fontSize: 14,
-                color: "#6b7280",
-              }}
-            >
+            <div style={{ marginTop: 4, fontSize: 14, color: "#6b7280" }}>
               Engångsbetalning • tillgång i 30 dagar
             </div>
 
@@ -861,11 +784,7 @@ function HomePageContent() {
         )}
 
         {rows.length > 0 && unlocked && (
-          <div
-            style={{
-              marginTop: 24,
-            }}
-          >
+          <div style={{ marginTop: 24 }}>
             {rows.map((r) => {
               const tags = normalizeTags(r.tags);
 
@@ -900,13 +819,7 @@ function HomePageContent() {
                   </div>
 
                   {r.provider && (
-                    <div
-                      style={{
-                        marginTop: 7,
-                        fontSize: 13,
-                        color: "#6b7280",
-                      }}
-                    >
+                    <div style={{ marginTop: 7, fontSize: 13, color: "#6b7280" }}>
                       {r.provider}
                     </div>
                   )}
@@ -977,12 +890,7 @@ function HomePageContent() {
                       Läs mer →
                     </Link>
 
-                    <div
-                      style={{
-                        fontSize: 12,
-                        color: "#9ca3af",
-                      }}
-                    >
+                    <div style={{ fontSize: 12, color: "#9ca3af" }}>
                       Visa detaljer
                     </div>
                   </div>
@@ -1003,5 +911,3 @@ export default function HomePage() {
     </Suspense>
   );
 }
-
-

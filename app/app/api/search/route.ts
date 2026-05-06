@@ -113,20 +113,18 @@ function normalizeSearchQuery(input: string) {
     .split(/\s+/)
     .filter(Boolean);
 
-  const uniqueTokens = Array.from(new Set(tokens));
-  return uniqueTokens.join(" ");
+  return Array.from(new Set(tokens)).join(" ");
 }
 
 export async function GET(req: NextRequest) {
   try {
     const q = (req.nextUrl.searchParams.get("q") || "").trim();
 
-    console.log("SEARCH QUERY:", q);
-
     if (!q) {
       return NextResponse.json({
         total: 0,
         results: [],
+        previewResults: [],
       });
     }
 
@@ -155,10 +153,15 @@ export async function GET(req: NextRequest) {
     }
 
     const results = Array.isArray(resultsData) ? resultsData : [];
-    const total =
-      typeof countData === "number"
-        ? countData
-        : Number(countData) || 0;
+    const total = typeof countData === "number" ? countData : Number(countData) || 0;
+    const previewResults = results.slice(0, 3);
+
+    console.log("SEARCH:", {
+      query: q,
+      normalized: normalizedQuery,
+      results: total,
+      timestamp: new Date().toISOString(),
+    });
 
     const { error: logError } = await supabase.from("search_logs").insert({
       query: q,
@@ -173,6 +176,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       total,
       results,
+      previewResults,
     });
   } catch (error) {
     console.error("API /api/search unexpected error:", error);
@@ -183,5 +187,3 @@ export async function GET(req: NextRequest) {
     );
   }
 }
-
-

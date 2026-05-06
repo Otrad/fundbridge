@@ -33,6 +33,7 @@ function HomePageContent() {
 
   const [q, setQ] = useState("");
   const [rows, setRows] = useState<Row[]>([]);
+  const [previewRows, setPreviewRows] = useState<Row[]>([]);
   const [total, setTotal] = useState(0);
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
@@ -71,6 +72,7 @@ function HomePageContent() {
 
     if (!query) {
       setRows([]);
+      setPreviewRows([]);
       setTotal(0);
       setErr("");
       setLoading(false);
@@ -97,6 +99,7 @@ function HomePageContent() {
       if (searchId !== activeSearchIdRef.current) return;
 
       setRows(Array.isArray(data?.results) ? data.results : []);
+      setPreviewRows(Array.isArray(data?.previewResults) ? data.previewResults : []);
       setTotal(typeof data?.total === "number" ? data.total : 0);
       setErr("");
       lastExecutedQueryRef.current = query;
@@ -106,6 +109,7 @@ function HomePageContent() {
       console.error("Frontend search error:", error);
       setErr("Kunde inte hämta sökresultat just nu.");
       setRows([]);
+      setPreviewRows([]);
       setTotal(0);
     } finally {
       if (searchId === activeSearchIdRef.current) setLoading(false);
@@ -172,6 +176,7 @@ function HomePageContent() {
     activeSearchIdRef.current += 1;
     setQ("");
     setRows([]);
+    setPreviewRows([]);
     setTotal(0);
     setErr("");
     setSuggestions([]);
@@ -238,6 +243,7 @@ function HomePageContent() {
     if (!urlQuery) {
       activeSearchIdRef.current += 1;
       setRows([]);
+      setPreviewRows([]);
       setTotal(0);
       setErr("");
       setLoading(false);
@@ -423,33 +429,9 @@ function HomePageContent() {
             }}
           >
             <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              <span
-                style={{
-                  width: 18,
-                  height: 2,
-                  borderRadius: 999,
-                  background: "#374151",
-                  display: "block",
-                }}
-              />
-              <span
-                style={{
-                  width: 18,
-                  height: 2,
-                  borderRadius: 999,
-                  background: "#374151",
-                  display: "block",
-                }}
-              />
-              <span
-                style={{
-                  width: 18,
-                  height: 2,
-                  borderRadius: 999,
-                  background: "#374151",
-                  display: "block",
-                }}
-              />
+              <span style={{ width: 18, height: 2, borderRadius: 999, background: "#374151", display: "block" }} />
+              <span style={{ width: 18, height: 2, borderRadius: 999, background: "#374151", display: "block" }} />
+              <span style={{ width: 18, height: 2, borderRadius: 999, background: "#374151", display: "block" }} />
             </div>
           </button>
         </header>
@@ -588,14 +570,7 @@ function HomePageContent() {
             </div>
           </form>
 
-          <p
-            style={{
-              marginTop: 16,
-              fontSize: 14,
-              lineHeight: 1.6,
-              color: "#6b7280",
-            }}
-          >
+          <p style={{ marginTop: 16, fontSize: 14, lineHeight: 1.6, color: "#6b7280" }}>
             Skriv till exempel juridikstudent, utlandsstudier, behövande eller
             medicin.
           </p>
@@ -684,12 +659,12 @@ function HomePageContent() {
               marginTop: 34,
               marginBottom: 16,
               textAlign: "center",
-              fontSize: 16,
-              fontWeight: 600,
-              color: "#374151",
+              fontSize: 17,
+              fontWeight: 700,
+              color: "#111827",
             }}
           >
-            {formatTotal(total)} stipendier hittades
+            🎯 {formatTotal(total)} stipendier matchar din sökning
           </div>
         )}
 
@@ -702,12 +677,52 @@ function HomePageContent() {
               background: "#ffffff",
               border: "1px solid #e7e7e2",
               textAlign: "center",
-              maxWidth: 520,
+              maxWidth: 560,
               marginLeft: "auto",
               marginRight: "auto",
               boxShadow: "0 10px 30px rgba(17,24,39,0.06)",
             }}
           >
+            {previewRows.length > 0 && (
+              <div
+                style={{
+                  marginBottom: 24,
+                  padding: isMobile ? "15px 14px" : "17px 18px",
+                  borderRadius: 14,
+                  background: "#f8faf9",
+                  border: "1px solid #e5e7eb",
+                  textAlign: "left",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 750,
+                    color: "#111827",
+                    marginBottom: 11,
+                    textAlign: "center",
+                  }}
+                >
+                  🔓 3 av {formatTotal(total)} stipendier visas gratis
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
+                  {previewRows.map((r) => (
+                    <div
+                      key={r.id}
+                      style={{
+                        fontSize: 14,
+                        lineHeight: 1.45,
+                        color: "#374151",
+                      }}
+                    >
+                      • {r.name}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div style={{ fontSize: 30, marginBottom: 12 }}>🔓</div>
 
             <div
@@ -717,7 +732,7 @@ function HomePageContent() {
                 marginBottom: 10,
               }}
             >
-              Lås upp alla stipendier
+              Lås upp resterande stipendier
             </div>
 
             <div style={{ fontSize: 15, color: "#4b5563", lineHeight: 1.6 }}>
@@ -765,9 +780,7 @@ function HomePageContent() {
                 opacity: isStartingCheckout ? 0.8 : 1,
               }}
             >
-              {isStartingCheckout
-                ? "Startar betalning..."
-                : "Få tillgång för 39 kr"}
+              {isStartingCheckout ? "Startar betalning..." : "Lås upp resten för 39 kr"}
             </button>
 
             <div
@@ -809,9 +822,7 @@ function HomePageContent() {
                     }}
                   >
                     <Link
-                      href={`/stipendium/${r.id}?from=${encodeURIComponent(
-                        q.trim()
-                      )}`}
+                      href={`/stipendium/${r.id}?from=${encodeURIComponent(q.trim())}`}
                       style={{ textDecoration: "none", color: "#111827" }}
                     >
                       {r.name}
@@ -877,9 +888,7 @@ function HomePageContent() {
                     }}
                   >
                     <Link
-                      href={`/stipendium/${r.id}?from=${encodeURIComponent(
-                        q.trim()
-                      )}`}
+                      href={`/stipendium/${r.id}?from=${encodeURIComponent(q.trim())}`}
                       style={{
                         fontSize: 14,
                         fontWeight: 600,
@@ -890,9 +899,7 @@ function HomePageContent() {
                       Läs mer →
                     </Link>
 
-                    <div style={{ fontSize: 12, color: "#9ca3af" }}>
-                      Visa detaljer
-                    </div>
+           <span style={{ fontSize: 12, color: "#9ca3af" }}>Visa detaljer</span>
                   </div>
                 </article>
               );

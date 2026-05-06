@@ -31,15 +31,20 @@ function ResultCard({
   row,
   query,
   isMobile,
+  locked = false,
+  onLockedClick,
 }: {
   row: Row;
   query: string;
   isMobile: boolean;
+  locked?: boolean;
+  onLockedClick?: () => void;
 }) {
   const tags = normalizeTags(row.tags);
 
   return (
     <article
+      onClick={locked ? onLockedClick : undefined}
       style={{
         border: "1px solid #e7e7e2",
         borderRadius: 20,
@@ -48,6 +53,7 @@ function ResultCard({
         background: "#ffffff",
         boxShadow: "0 6px 24px rgba(17,24,39,0.03)",
         textAlign: "left",
+        cursor: locked ? "pointer" : "default",
       }}
     >
       <div
@@ -58,12 +64,18 @@ function ResultCard({
           letterSpacing: "-0.02em",
         }}
       >
-        <Link
-          href={`/stipendium/${row.id}?from=${encodeURIComponent(query.trim())}`}
-          style={{ textDecoration: "none", color: "#111827" }}
-        >
-          {row.name}
-        </Link>
+        {locked ? (
+          <span style={{ color: "#111827" }}>{row.name}</span>
+        ) : (
+          <Link
+            href={`/stipendium/${row.id}?from=${encodeURIComponent(
+              query.trim()
+            )}`}
+            style={{ textDecoration: "none", color: "#111827" }}
+          >
+            {row.name}
+          </Link>
+        )}
       </div>
 
       {row.provider && (
@@ -81,7 +93,9 @@ function ResultCard({
             fontSize: 15,
           }}
         >
-          {row.summary}
+          {row.summary.length > 180
+            ? `${row.summary.slice(0, 180)}...`
+            : row.summary}
         </div>
       )}
 
@@ -94,23 +108,39 @@ function ResultCard({
             marginTop: 15,
           }}
         >
-          {tags.map((tag) => (
-            <Link
-              key={`${row.id}-${tag}`}
-              href={`/?q=${encodeURIComponent(tag)}`}
-              style={{
-                textDecoration: "none",
-                padding: "6px 11px",
-                borderRadius: 999,
-                background: "#eef4f4",
-                color: "#234f52",
-                fontSize: 12,
-                fontWeight: 600,
-              }}
-            >
-              {tag}
-            </Link>
-          ))}
+          {tags.map((tag) =>
+            locked ? (
+              <span
+                key={`${row.id}-${tag}`}
+                style={{
+                  padding: "6px 11px",
+                  borderRadius: 999,
+                  background: "#eef4f4",
+                  color: "#234f52",
+                  fontSize: 12,
+                  fontWeight: 600,
+                }}
+              >
+                {tag}
+              </span>
+            ) : (
+              <Link
+                key={`${row.id}-${tag}`}
+                href={`/?q=${encodeURIComponent(tag)}`}
+                style={{
+                  textDecoration: "none",
+                  padding: "6px 11px",
+                  borderRadius: 999,
+                  background: "#eef4f4",
+                  color: "#234f52",
+                  fontSize: 12,
+                  fontWeight: 600,
+                }}
+              >
+                {tag}
+              </Link>
+            )
+          )}
         </div>
       )}
 
@@ -124,17 +154,41 @@ function ResultCard({
           gap: isMobile ? 8 : 12,
         }}
       >
-        <Link
-          href={`/stipendium/${row.id}?from=${encodeURIComponent(query.trim())}`}
-          style={{
-            fontSize: 14,
-            fontWeight: 600,
-            textDecoration: "none",
-            color: "#2f6f73",
-          }}
-        >
-          Läs mer →
-        </Link>
+        {locked ? (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onLockedClick?.();
+            }}
+            style={{
+              border: "none",
+              background: "transparent",
+              padding: 0,
+              margin: 0,
+              fontSize: 14,
+              fontWeight: 700,
+              color: "#2f6f73",
+              cursor: "pointer",
+            }}
+          >
+            🔒 Lås upp för att se detaljer →
+          </button>
+        ) : (
+          <Link
+            href={`/stipendium/${row.id}?from=${encodeURIComponent(
+              query.trim()
+            )}`}
+            style={{
+              fontSize: 14,
+              fontWeight: 600,
+              textDecoration: "none",
+              color: "#2f6f73",
+            }}
+          >
+            Läs mer →
+          </Link>
+        )}
 
         <span style={{ fontSize: 12, color: "#9ca3af" }}>Visa detaljer</span>
       </div>
@@ -216,9 +270,17 @@ function HomePageContent() {
   const [hasSearched, setHasSearched] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
+  const paywallRef = useRef<HTMLDivElement | null>(null);
   const hasInitialized = useRef(false);
   const lastExecutedQueryRef = useRef("");
   const activeSearchIdRef = useRef(0);
+
+  function scrollToPaywall() {
+    paywallRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+  }
 
   const placeholder = useMemo(() => {
     if (isMobile) return "Sök stipendier...";
@@ -474,31 +536,25 @@ function HomePageContent() {
               flexDirection: "column",
             }}
           >
-            <div
+            <button
+              type="button"
+              aria-label="Stäng meny"
+              onClick={() => setMenuOpen(false)}
               style={{
-                display: "flex",
-                justifyContent: "flex-end",
+                width: 40,
+                height: 40,
+                borderRadius: 999,
+                border: "1px solid #e5e7eb",
+                background: "#fafaf9",
+                cursor: "pointer",
+                fontSize: 18,
+                color: "#374151",
+                alignSelf: "flex-end",
                 marginBottom: 18,
               }}
             >
-              <button
-                type="button"
-                aria-label="Stäng meny"
-                onClick={() => setMenuOpen(false)}
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 999,
-                  border: "1px solid #e5e7eb",
-                  background: "#fafaf9",
-                  cursor: "pointer",
-                  fontSize: 18,
-                  color: "#374151",
-                }}
-              >
-                ✕
-              </button>
-            </div>
+              ✕
+            </button>
 
             <div
               style={{
@@ -513,35 +569,33 @@ function HomePageContent() {
               Meny
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <Link
-                href="/om-fundbridge"
-                onClick={() => setMenuOpen(false)}
-                style={{
-                  textDecoration: "none",
-                  color: "#111827",
-                  fontSize: 18,
-                  fontWeight: 600,
-                  padding: "12px 6px",
-                }}
-              >
-                Om Fundbridge
-              </Link>
+            <Link
+              href="/om-fundbridge"
+              onClick={() => setMenuOpen(false)}
+              style={{
+                textDecoration: "none",
+                color: "#111827",
+                fontSize: 18,
+                fontWeight: 600,
+                padding: "12px 6px",
+              }}
+            >
+              Om Fundbridge
+            </Link>
 
-              <Link
-                href="/kontakt"
-                onClick={() => setMenuOpen(false)}
-                style={{
-                  textDecoration: "none",
-                  color: "#111827",
-                  fontSize: 18,
-                  fontWeight: 600,
-                  padding: "12px 6px",
-                }}
-              >
-                Kontakt
-              </Link>
-            </div>
+            <Link
+              href="/kontakt"
+              onClick={() => setMenuOpen(false)}
+              style={{
+                textDecoration: "none",
+                color: "#111827",
+                fontSize: 18,
+                fontWeight: 600,
+                padding: "12px 6px",
+              }}
+            >
+              Kontakt
+            </Link>
           </aside>
         </>
       )}
@@ -601,33 +655,18 @@ function HomePageContent() {
             }}
           >
             <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              <span
-                style={{
-                  width: 18,
-                  height: 2,
-                  borderRadius: 999,
-                  background: "#374151",
-                  display: "block",
-                }}
-              />
-              <span
-                style={{
-                  width: 18,
-                  height: 2,
-                  borderRadius: 999,
-                  background: "#374151",
-                  display: "block",
-                }}
-              />
-              <span
-                style={{
-                  width: 18,
-                  height: 2,
-                  borderRadius: 999,
-                  background: "#374151",
-                  display: "block",
-                }}
-              />
+              {[1, 2, 3].map((line) => (
+                <span
+                  key={line}
+                  style={{
+                    width: 18,
+                    height: 2,
+                    borderRadius: 999,
+                    background: "#374151",
+                    display: "block",
+                  }}
+                />
+              ))}
             </div>
           </button>
         </header>
@@ -818,12 +857,10 @@ function HomePageContent() {
             <div style={{ fontSize: 16, fontWeight: 600 }}>
               ⚠️ Betalningen avbröts
             </div>
-
             <div style={{ marginTop: 6, fontSize: 14, lineHeight: 1.5 }}>
               Ingen debitering har skett. Du kan fortsätta söka och låsa upp när
               du vill.
             </div>
-
             <button
               onClick={handleCheckout}
               style={{
@@ -897,6 +934,8 @@ function HomePageContent() {
                     row={row}
                     query={q}
                     isMobile={isMobile}
+                    locked
+                    onLockedClick={scrollToPaywall}
                   />
                 ))}
               </>
@@ -907,6 +946,7 @@ function HomePageContent() {
               <LockedCard isMobile={isMobile} />
 
               <div
+                ref={paywallRef}
                 style={{
                   marginTop: -4,
                   padding: isMobile ? "24px 18px" : "28px 24px",
@@ -942,8 +982,8 @@ function HomePageContent() {
                     margin: "0 auto",
                   }}
                 >
-                  Få tillgång till alla {formatTotal(total)} matchande stipendier,
-                  detaljer och ansökningsinformation.
+                  Få tillgång till alla {formatTotal(total)} matchande
+                  stipendier och all tillgänglig information.
                 </div>
 
                 <div style={{ marginTop: 18, fontSize: 24, fontWeight: 900 }}>

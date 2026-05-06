@@ -27,6 +27,176 @@ function formatTotal(total: number) {
   return String(total);
 }
 
+function ResultCard({
+  row,
+  query,
+  isMobile,
+}: {
+  row: Row;
+  query: string;
+  isMobile: boolean;
+}) {
+  const tags = normalizeTags(row.tags);
+
+  return (
+    <article
+      style={{
+        border: "1px solid #e7e7e2",
+        borderRadius: 20,
+        padding: isMobile ? 18 : 22,
+        marginBottom: 16,
+        background: "#ffffff",
+        boxShadow: "0 6px 24px rgba(17,24,39,0.03)",
+        textAlign: "left",
+      }}
+    >
+      <div
+        style={{
+          fontWeight: 700,
+          fontSize: isMobile ? 20 : 22,
+          lineHeight: 1.25,
+          letterSpacing: "-0.02em",
+        }}
+      >
+        <Link
+          href={`/stipendium/${row.id}?from=${encodeURIComponent(query.trim())}`}
+          style={{ textDecoration: "none", color: "#111827" }}
+        >
+          {row.name}
+        </Link>
+      </div>
+
+      {row.provider && (
+        <div style={{ marginTop: 7, fontSize: 13, color: "#6b7280" }}>
+          {row.provider}
+        </div>
+      )}
+
+      {row.summary && (
+        <div
+          style={{
+            marginTop: 12,
+            lineHeight: 1.65,
+            color: "#374151",
+            fontSize: 15,
+          }}
+        >
+          {row.summary}
+        </div>
+      )}
+
+      {tags.length > 0 && (
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 8,
+            marginTop: 15,
+          }}
+        >
+          {tags.map((tag) => (
+            <Link
+              key={`${row.id}-${tag}`}
+              href={`/?q=${encodeURIComponent(tag)}`}
+              style={{
+                textDecoration: "none",
+                padding: "6px 11px",
+                borderRadius: 999,
+                background: "#eef4f4",
+                color: "#234f52",
+                fontSize: 12,
+                fontWeight: 600,
+              }}
+            >
+              {tag}
+            </Link>
+          ))}
+        </div>
+      )}
+
+      <div
+        style={{
+          marginTop: 16,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: isMobile ? "flex-start" : "center",
+          flexDirection: isMobile ? "column" : "row",
+          gap: isMobile ? 8 : 12,
+        }}
+      >
+        <Link
+          href={`/stipendium/${row.id}?from=${encodeURIComponent(query.trim())}`}
+          style={{
+            fontSize: 14,
+            fontWeight: 600,
+            textDecoration: "none",
+            color: "#2f6f73",
+          }}
+        >
+          Läs mer →
+        </Link>
+
+        <span style={{ fontSize: 12, color: "#9ca3af" }}>Visa detaljer</span>
+      </div>
+    </article>
+  );
+}
+
+function LockedCard({ isMobile }: { isMobile: boolean }) {
+  return (
+    <article
+      style={{
+        border: "1px solid #e7e7e2",
+        borderRadius: 20,
+        padding: isMobile ? 18 : 22,
+        marginBottom: 14,
+        background: "#ffffff",
+        boxShadow: "0 6px 24px rgba(17,24,39,0.03)",
+        filter: "blur(3px)",
+        opacity: 0.55,
+        userSelect: "none",
+        pointerEvents: "none",
+      }}
+    >
+      <div
+        style={{
+          height: 24,
+          width: "78%",
+          borderRadius: 8,
+          background: "#d9dedc",
+          marginBottom: 12,
+        }}
+      />
+      <div
+        style={{
+          height: 14,
+          width: "44%",
+          borderRadius: 8,
+          background: "#e5e7eb",
+          marginBottom: 16,
+        }}
+      />
+      <div
+        style={{
+          height: 14,
+          width: "94%",
+          borderRadius: 8,
+          background: "#e5e7eb",
+          marginBottom: 8,
+        }}
+      />
+      <div
+        style={{
+          height: 14,
+          width: "72%",
+          borderRadius: 8,
+          background: "#e5e7eb",
+        }}
+      />
+    </article>
+  );
+}
+
 function HomePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -99,7 +269,9 @@ function HomePageContent() {
       if (searchId !== activeSearchIdRef.current) return;
 
       setRows(Array.isArray(data?.results) ? data.results : []);
-      setPreviewRows(Array.isArray(data?.previewResults) ? data.previewResults : []);
+      setPreviewRows(
+        Array.isArray(data?.previewResults) ? data.previewResults : []
+      );
       setTotal(typeof data?.total === "number" ? data.total : 0);
       setErr("");
       lastExecutedQueryRef.current = query;
@@ -400,7 +572,7 @@ function HomePageContent() {
               margin: 0,
               cursor: "pointer",
               fontSize: 18,
-              fontWeight: 750,
+              fontWeight: 700,
               letterSpacing: "-0.03em",
               color: "#2f6f73",
             }}
@@ -429,9 +601,33 @@ function HomePageContent() {
             }}
           >
             <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              <span style={{ width: 18, height: 2, borderRadius: 999, background: "#374151", display: "block" }} />
-              <span style={{ width: 18, height: 2, borderRadius: 999, background: "#374151", display: "block" }} />
-              <span style={{ width: 18, height: 2, borderRadius: 999, background: "#374151", display: "block" }} />
+              <span
+                style={{
+                  width: 18,
+                  height: 2,
+                  borderRadius: 999,
+                  background: "#374151",
+                  display: "block",
+                }}
+              />
+              <span
+                style={{
+                  width: 18,
+                  height: 2,
+                  borderRadius: 999,
+                  background: "#374151",
+                  display: "block",
+                }}
+              />
+              <span
+                style={{
+                  width: 18,
+                  height: 2,
+                  borderRadius: 999,
+                  background: "#374151",
+                  display: "block",
+                }}
+              />
             </div>
           </button>
         </header>
@@ -443,7 +639,7 @@ function HomePageContent() {
               fontSize: isMobile ? (hasSearch ? 34 : 42) : hasSearch ? 42 : 56,
               lineHeight: isMobile ? 1.06 : 1.02,
               letterSpacing: "-0.045em",
-              fontWeight: 750,
+              fontWeight: 700,
               color: "#111827",
             }}
           >
@@ -570,7 +766,14 @@ function HomePageContent() {
             </div>
           </form>
 
-          <p style={{ marginTop: 16, fontSize: 14, lineHeight: 1.6, color: "#6b7280" }}>
+          <p
+            style={{
+              marginTop: 16,
+              fontSize: 14,
+              lineHeight: 1.6,
+              color: "#6b7280",
+            }}
+          >
             Skriv till exempel juridikstudent, utlandsstudier, behövande eller
             medicin.
           </p>
@@ -653,257 +856,154 @@ function HomePageContent() {
           </p>
         )}
 
-        {!err && !loading && total > 0 && (
-          <div
-            style={{
-              marginTop: 34,
-              marginBottom: 16,
-              textAlign: "center",
-              fontSize: 17,
-              fontWeight: 700,
-              color: "#111827",
-            }}
-          >
-            🎯 {formatTotal(total)} stipendier matchar din sökning
-          </div>
-        )}
-
         {!err && !loading && total > 0 && !unlocked && (
           <div
             style={{
-              marginTop: 20,
-              padding: isMobile ? "24px 18px" : "30px 24px",
-              borderRadius: 18,
-              background: "#ffffff",
-              border: "1px solid #e7e7e2",
-              textAlign: "center",
-              maxWidth: 560,
+              marginTop: 34,
+              maxWidth: 720,
               marginLeft: "auto",
               marginRight: "auto",
-              boxShadow: "0 10px 30px rgba(17,24,39,0.06)",
             }}
           >
+            <div
+              style={{
+                marginBottom: 18,
+                textAlign: "center",
+                fontSize: 18,
+                fontWeight: 800,
+                color: "#111827",
+              }}
+            >
+              🎯 {formatTotal(total)} stipendier matchar din sökning
+            </div>
+
             {previewRows.length > 0 && (
-              <div
-                style={{
-                  marginBottom: 24,
-                  padding: isMobile ? "15px 14px" : "17px 18px",
-                  borderRadius: 14,
-                  background: "#f8faf9",
-                  border: "1px solid #e5e7eb",
-                  textAlign: "left",
-                }}
-              >
+              <>
                 <div
                   style={{
-                    fontSize: 14,
-                    fontWeight: 750,
-                    color: "#111827",
-                    marginBottom: 11,
+                    marginBottom: 14,
                     textAlign: "center",
+                    fontSize: 14,
+                    color: "#6b7280",
+                    lineHeight: 1.6,
                   }}
                 >
-                  🔓 3 av {formatTotal(total)} stipendier visas gratis
+                  Här är några exempel från resultatlistan. Resten är låst.
                 </div>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-                  {previewRows.map((r) => (
-                    <div
-                      key={r.id}
-                      style={{
-                        fontSize: 14,
-                        lineHeight: 1.45,
-                        color: "#374151",
-                      }}
-                    >
-                      • {r.name}
-                    </div>
-                  ))}
-                </div>
-              </div>
+                {previewRows.map((row) => (
+                  <ResultCard
+                    key={row.id}
+                    row={row}
+                    query={q}
+                    isMobile={isMobile}
+                  />
+                ))}
+              </>
             )}
 
-            <div style={{ fontSize: 30, marginBottom: 12 }}>🔓</div>
+            <div style={{ position: "relative", marginTop: 4 }}>
+              <LockedCard isMobile={isMobile} />
+              <LockedCard isMobile={isMobile} />
 
-            <div
-              style={{
-                fontSize: isMobile ? 20 : 22,
-                fontWeight: 700,
-                marginBottom: 10,
-              }}
-            >
-              Lås upp resterande stipendier
-            </div>
+              <div
+                style={{
+                  marginTop: -4,
+                  padding: isMobile ? "24px 18px" : "28px 24px",
+                  borderRadius: 22,
+                  background: "#ffffff",
+                  border: "1px solid #dfe5e2",
+                  textAlign: "center",
+                  boxShadow: "0 18px 45px rgba(17,24,39,0.10)",
+                  position: "relative",
+                  zIndex: 2,
+                }}
+              >
+                <div style={{ fontSize: 28, marginBottom: 10 }}>🔒</div>
 
-            <div style={{ fontSize: 15, color: "#4b5563", lineHeight: 1.6 }}>
-              Du har hittat {formatTotal(total)} stipendier som matchar din
-              sökning.
-            </div>
+                <div
+                  style={{
+                    fontSize: isMobile ? 21 : 24,
+                    fontWeight: 800,
+                    letterSpacing: "-0.03em",
+                    color: "#111827",
+                    marginBottom: 10,
+                  }}
+                >
+                  Lås upp resten av listan
+                </div>
 
-            <div
-              style={{
-                marginTop: 10,
-                fontSize: 15,
-                color: "#4b5563",
-                lineHeight: 1.6,
-              }}
-            >
-              Få full tillgång till alla resultat, detaljer och
-              ansökningsinformation direkt.
-            </div>
+                <div
+                  style={{
+                    fontSize: 15,
+                    color: "#4b5563",
+                    lineHeight: 1.6,
+                    maxWidth: 480,
+                    margin: "0 auto",
+                  }}
+                >
+                  Få tillgång till alla {formatTotal(total)} matchande stipendier,
+                  detaljer och ansökningsinformation.
+                </div>
 
-            <div style={{ marginTop: 18, fontSize: 20, fontWeight: 800 }}>
-              39 kr
-            </div>
+                <div style={{ marginTop: 18, fontSize: 24, fontWeight: 900 }}>
+                  39 kr
+                </div>
 
-            <div style={{ marginTop: 4, fontSize: 14, color: "#6b7280" }}>
-              Engångsbetalning • tillgång i 30 dagar
-            </div>
+                <div style={{ marginTop: 4, fontSize: 14, color: "#6b7280" }}>
+                  Engångsbetalning • tillgång i 30 dagar
+                </div>
 
-            <button
-              onClick={handleCheckout}
-              disabled={isStartingCheckout}
-              style={{
-                marginTop: 20,
-                width: isMobile ? "100%" : "auto",
-                maxWidth: isMobile ? 320 : undefined,
-                height: 46,
-                padding: isMobile ? "0 18px" : "0 24px",
-                borderRadius: 12,
-                border: "none",
-                background: "#2f6f73",
-                color: "#fff",
-                fontWeight: 600,
-                cursor: isStartingCheckout ? "default" : "pointer",
-                fontSize: 16,
-                boxShadow: "0 6px 18px rgba(47,111,115,0.18)",
-                opacity: isStartingCheckout ? 0.8 : 1,
-              }}
-            >
-              {isStartingCheckout ? "Startar betalning..." : "Lås upp resten för 39 kr"}
-            </button>
+                <button
+                  onClick={handleCheckout}
+                  disabled={isStartingCheckout}
+                  style={{
+                    marginTop: 20,
+                    width: isMobile ? "100%" : "auto",
+                    minWidth: isMobile ? undefined : 260,
+                    height: 50,
+                    padding: "0 26px",
+                    borderRadius: 14,
+                    border: "none",
+                    background: "#2f6f73",
+                    color: "#fff",
+                    fontWeight: 700,
+                    cursor: isStartingCheckout ? "default" : "pointer",
+                    fontSize: 16,
+                    boxShadow: "0 8px 22px rgba(47,111,115,0.20)",
+                    opacity: isStartingCheckout ? 0.8 : 1,
+                  }}
+                >
+                  {isStartingCheckout
+                    ? "Startar betalning..."
+                    : "Lås upp alla stipendier"}
+                </button>
 
-            <div
-              style={{
-                marginTop: 12,
-                fontSize: 13,
-                color: "#9ca3af",
-                lineHeight: 1.5,
-              }}
-            >
-              Ingen prenumeration • Ingen bindningstid
+                <div
+                  style={{
+                    marginTop: 12,
+                    fontSize: 13,
+                    color: "#9ca3af",
+                    lineHeight: 1.5,
+                  }}
+                >
+                  Säker betalning via Stripe • Ingen prenumeration
+                </div>
+              </div>
             </div>
           </div>
         )}
 
         {rows.length > 0 && unlocked && (
           <div style={{ marginTop: 24 }}>
-            {rows.map((r) => {
-              const tags = normalizeTags(r.tags);
-
-              return (
-                <article
-                  key={r.id}
-                  style={{
-                    border: "1px solid #e7e7e2",
-                    borderRadius: 20,
-                    padding: isMobile ? 18 : 22,
-                    marginBottom: 16,
-                    background: "#ffffff",
-                    boxShadow: "0 6px 24px rgba(17,24,39,0.03)",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontWeight: 700,
-                      fontSize: isMobile ? 20 : 22,
-                      lineHeight: 1.25,
-                      letterSpacing: "-0.02em",
-                    }}
-                  >
-                    <Link
-                      href={`/stipendium/${r.id}?from=${encodeURIComponent(q.trim())}`}
-                      style={{ textDecoration: "none", color: "#111827" }}
-                    >
-                      {r.name}
-                    </Link>
-                  </div>
-
-                  {r.provider && (
-                    <div style={{ marginTop: 7, fontSize: 13, color: "#6b7280" }}>
-                      {r.provider}
-                    </div>
-                  )}
-
-                  {r.summary && (
-                    <div
-                      style={{
-                        marginTop: 12,
-                        lineHeight: 1.65,
-                        color: "#374151",
-                        fontSize: 15,
-                      }}
-                    >
-                      {r.summary}
-                    </div>
-                  )}
-
-                  {tags.length > 0 && (
-                    <div
-                      style={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        gap: 8,
-                        marginTop: 15,
-                      }}
-                    >
-                      {tags.map((tag) => (
-                        <Link
-                          key={`${r.id}-${tag}`}
-                          href={`/?q=${encodeURIComponent(tag)}`}
-                          style={{
-                            textDecoration: "none",
-                            padding: "6px 11px",
-                            borderRadius: 999,
-                            background: "#eef4f4",
-                            color: "#234f52",
-                            fontSize: 12,
-                            fontWeight: 600,
-                          }}
-                        >
-                          {tag}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-
-                  <div
-                    style={{
-                      marginTop: 16,
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: isMobile ? "flex-start" : "center",
-                      flexDirection: isMobile ? "column" : "row",
-                      gap: isMobile ? 8 : 12,
-                    }}
-                  >
-                    <Link
-                      href={`/stipendium/${r.id}?from=${encodeURIComponent(q.trim())}`}
-                      style={{
-                        fontSize: 14,
-                        fontWeight: 600,
-                        textDecoration: "none",
-                        color: "#2f6f73",
-                      }}
-                    >
-                      Läs mer →
-                    </Link>
-
-           <span style={{ fontSize: 12, color: "#9ca3af" }}>Visa detaljer</span>
-                  </div>
-                </article>
-              );
-            })}
+            {rows.map((row) => (
+              <ResultCard
+                key={row.id}
+                row={row}
+                query={q}
+                isMobile={isMobile}
+              />
+            ))}
           </div>
         )}
       </div>

@@ -949,7 +949,7 @@ function HomePageContent() {
                 ref={paywallRef}
                 style={{
                   marginTop: -4,
-                  padding: isMobile ? "24px 18px" : "28px 24px",
+                  padding: isMobile ? "26px 18px" : "32px 28px",
                   borderRadius: 22,
                   background: "#ffffff",
                   border: "1px solid #dfe5e2",
@@ -963,35 +963,50 @@ function HomePageContent() {
 
                 <div
                   style={{
-                    fontSize: isMobile ? 21 : 24,
+                    fontSize: isMobile ? 22 : 25,
                     fontWeight: 800,
                     letterSpacing: "-0.03em",
                     color: "#111827",
                     marginBottom: 10,
                   }}
                 >
-                  Lås upp resten av listan
+                  Du har hittat {formatTotal(total)} stipendier
                 </div>
 
                 <div
                   style={{
                     fontSize: 15,
                     color: "#4b5563",
-                    lineHeight: 1.6,
-                    maxWidth: 480,
+                    lineHeight: 1.65,
+                    maxWidth: 500,
                     margin: "0 auto",
                   }}
                 >
-                  Få tillgång till alla {formatTotal(total)} matchande
-                  stipendier och all tillgänglig information.
+                  Många stipendier är svåra att hitta – här har vi samlat dem åt
+                  dig.
                 </div>
 
-                <div style={{ marginTop: 18, fontSize: 24, fontWeight: 900 }}>
+                <div
+                  style={{
+                    marginTop: 10,
+                    fontSize: 14,
+                    color: "#6b7280",
+                    lineHeight: 1.6,
+                    maxWidth: 500,
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                  }}
+                >
+                  Istället för att leta runt på flera olika sidor får du hela
+                  listan direkt.
+                </div>
+
+                <div style={{ marginTop: 20, fontSize: 24, fontWeight: 900 }}>
                   39 kr
                 </div>
 
                 <div style={{ marginTop: 4, fontSize: 14, color: "#6b7280" }}>
-                  Engångsbetalning • tillgång i 30 dagar
+                  Engångsbetalning • Ingen prenumeration
                 </div>
 
                 <button
@@ -1000,7 +1015,7 @@ function HomePageContent() {
                   style={{
                     marginTop: 20,
                     width: isMobile ? "100%" : "auto",
-                    minWidth: isMobile ? undefined : 260,
+                    minWidth: isMobile ? undefined : 270,
                     height: 50,
                     padding: "0 26px",
                     borderRadius: 14,
@@ -1016,7 +1031,7 @@ function HomePageContent() {
                 >
                   {isStartingCheckout
                     ? "Startar betalning..."
-                    : "Lås upp alla stipendier"}
+                    : "🔓 Se hela listan (39 kr)"}
                 </button>
 
                 <div
@@ -1027,7 +1042,7 @@ function HomePageContent() {
                     lineHeight: 1.5,
                   }}
                 >
-                  Säker betalning via Stripe • Ingen prenumeration
+                  Tillgång i 30 dagar
                 </div>
               </div>
             </div>
